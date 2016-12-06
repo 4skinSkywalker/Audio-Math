@@ -5,14 +5,15 @@ function AudioMath(name, optionsTrg, trainerTrg) {
 	this.rowsTrg 		= "rows";
 	this.digitsTrg 		= "digits";
 	this.powTrg 		= "enable-power";
+	this.equalCharTrg	= "equal-char";
 	this.operationTrg 	= "operation";
 	this.voiceTrg		= "voice-list";
 	this.running 		= false;
 	this.rows			= 40;
 	this.digits 		= 1;
 	this.powerOfTen		= "No";
-	this.operation		= ["+"];
-	this.op				= "+";
+	this.equalChar		= "=";
+	this.operation		= "+";
 	this.voice			= 0;
 	this.series 		= [];
 }
@@ -29,7 +30,7 @@ AudioMath.prototype.speechUtteranceChunker = function (utt, settings, callback) 
     if(chunkArr !== null) {
 		if(chunkArr[0].length > 2) {
 		
-			var chunk = chunkArr[0];
+			var chunk = chunkArr[0].trim();
 			var newUtt = new SpeechSynthesisUtterance(chunk);
 			
 			for(x in settings)
@@ -46,7 +47,7 @@ AudioMath.prototype.speechUtteranceChunker = function (utt, settings, callback) 
 			
 			if(this.running)
 				setTimeout(function() {
-					window.speechSynthesis.speak(newUtt);
+					speechSynthesis.speak(newUtt);
 				}, 0);
 		}
     } else {
@@ -73,8 +74,22 @@ AudioMath.prototype.getOptionsHTML = function() {
 	s +=	'</select>';
 	s += '</li>';
 	s += '<li class="nav-item">';
+	s += 	'<label for="' + this.equalCharTrg + '">Equal character</label>';
+	s +=	'<select class="option" id="' + this.equalCharTrg + '">';
+	s +=		'<option>=</option>';
+	s +=		'<option>è</option>';
+	s +=		'<option>es</option>';
+	s +=		'<option>est</option>';
+	s +=		'<option>ist</option>';
+	s +=		'<option>is</option>';
+	s +=	'</select>';
+	s += '</li>';
+	s += '<li class="nav-item">';
 	s += 	'<label for="' + this.operationTrg + '">Operation</label>';
-	s +=	'<select class="option" id="' + this.operationTrg + '"></select>';
+	s +=	'<select class="option" id="' + this.operationTrg + '">';
+	s +=		'<option>+</option>';
+	s +=		'<option>*</option>';
+	s +=    '</select>';
 	s += '</li>';
 	s += '<li class="nav-item">';
 	s += 	'<label for="' + this.voiceTrg + '">Voice</label>';
@@ -111,10 +126,10 @@ AudioMath.prototype.generateArray = function() {
 			second 	= this.randomNumber(this.digits);
 			
 		this.series.push(first);
-		this.series.push(" " + this.op + " ");
+		this.series.push((this.operation == "*") ? " per " : " " + this.operation + " ");
 		this.series.push(second);
-		this.series.push(" = ");
-		this.series.push(first + second);
+		this.series.push(" " + this.equalChar + " ");
+		this.series.push(eval(first + this.operation + second));
 		if(i < this.rows - 1)
 			this.series.push(", ");
 	}
@@ -139,10 +154,6 @@ AudioMath.prototype.init = function() {
 			_this.powerOfTen 	= $("#" + _this.powTrg).val();
 			_this.voice			= $("#" + _this.voiceTrg).find("option:selected").attr("data-index");
 		});
-	});
-	
-	$.each(this.operation, function(index, value) {
-		$("#" + _this.operationTrg).append("<option>" + value + "</option>");
 	});
 	
 	function populateVoiceList() {
@@ -217,8 +228,6 @@ AudioMath.prototype.stop = function() {
 		} else {
 			alert("Already stopped.");
 		}
-	} else {
-		alert("Nothing to stop, click on New.");
 	}
 };
 
@@ -226,5 +235,5 @@ AudioMath.prototype.talk = function() {
 	
 	var utterance = new SpeechSynthesisUtterance(this.series.join(""));
 	
-	this.speechUtteranceChunker(utterance, {chunkLength: 66, voice: this.voiceList[this.voice]}, this.stop.bind(this));
+	this.speechUtteranceChunker(utterance, {chunkLength: 58, voice: this.voiceList[this.voice]}, this.stop.bind(this));
 };
