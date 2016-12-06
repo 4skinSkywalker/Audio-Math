@@ -100,6 +100,7 @@ AudioMath.prototype.getOptionsHTML = function() {
 
 AudioMath.prototype.getTrainerHTML = function() {
     var s = "";
+	s += '<div id="abacus"></div>'
 	s += '<div id="dashboard">'
 	s +=	'<input id="new" class="btn-standard" type="button" value="New" onclick="' + this.name + '.new();"/>'
 	s +=	'<input class="btn-standard" type="button" value="Replay" onclick="' + this.name + '.replay();"/>'
