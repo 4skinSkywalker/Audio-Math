@@ -80,7 +80,7 @@ AudioMath.prototype.getOptionsHTML = function() {
 	s += '</li>';
 	s += '<li class="nav-item">';
 	s += 	'<label for="' + this.rateTrg + '">Speech rate</label>';
-	s +=	'<input type="range" class="slider" id="' + this.rateTrg + '" min="0.33" max="6.66" step="0.01" value="' + this.rate + '">';
+	s +=	'<input type="range" class="slider" id="' + this.rateTrg + '" min="0.33" max="3.33" step="0.001" value="' + this.rate + '">';
 	s += '</li>';
 	s += '<li class="nav-item">';
 	s += 	'<label for="' + this.stepTrg + '">Step by step?</label>';
