@@ -151,8 +151,9 @@ AudioMath.prototype.init = function() {
 		$(this).change(function() { 
 			_this.rows 			= $("#" + _this.rowsTrg).val();
 			_this.digits 		= Number($("#" + _this.digitsTrg).val());
-			_this.operation 	= $("#" + _this.operationTrg).val();
 			_this.powerOfTen 	= $("#" + _this.powTrg).val();
+			_this.equalChar 	= $("#" + _this.equalCharTrg).val();
+			_this.operation 	= $("#" + _this.operationTrg).val();
 			_this.voice			= $("#" + _this.voiceTrg).find("option:selected").attr("data-index");
 		});
 	});
