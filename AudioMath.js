@@ -4,23 +4,24 @@ function AudioMath(name, optionsTrg, trainerTrg) {
 	this.optionsTrg 	= optionsTrg;
 	this.trainerTrg		= trainerTrg;
 	this.rowsTrg 		= "rows";
-	this.digitsTrg 		= "digits";
+	this.n1DigsTrg 		= "first";
+	this.n2DigsTrg 		= "second";
 	this.rateTrg		= "rate";
 	this.stepTrg 		= "step-by-step";
-	this.powTrg 		= "enable-power";
 	this.equalCharTrg	= "equal-char";
 	this.operationTrg 	= "operation";
 	this.voiceTrg		= "voice-list";
 	this.running 		= false;
 	this.rows			= 40;
-	this.digits 		= 1;
+	this.n1Digits 		= 2;
+	this.n2Digits 		= 1;
 	this.rate			= 1;
 	this.step			= "Yes";
-	this.powerOfTen		= "No";
 	this.equalChar		= "=";
 	this.operation		= "+";
 	this.voice			= 0;
 	this.series 		= [];
+	this.chunkLength 	= 58;
 }
 
 AudioMath.prototype.speechUtteranceChunker = function (utt, settings, callback) {
@@ -68,15 +69,12 @@ AudioMath.prototype.getOptionsHTML = function() {
 	s += 	'<input type="text" class="option numpad" id="' + this.rowsTrg + '" value="40"/>';
 	s += '</li>';
 	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.digitsTrg + '">Digits</label>';
-	s += 	'<input type="text" class="option numpad" id="' + this.digitsTrg + '" value="1"/>';
+	s += 	'<label for="' + this.n1DigsTrg + '">Digits of num 1</label>';
+	s += 	'<input type="text" class="option numpad" id="' + this.n1DigsTrg + '" value="' + this.n1Digits + '"/>';
 	s += '</li>';
 	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.powTrg + '">Power of ten?</label>';
-	s +=	'<select class="option" id="' + this.powTrg + '">';
-	s +=		'<option>No</option>';
-	s +=		'<option>Yes</option>';
-	s +=	'</select>';
+	s += 	'<label for="' + this.n2DigsTrg + '">Digits of num 2</label>';
+	s += 	'<input type="text" class="option numpad" id="' + this.n2DigsTrg + '" value="' + this.n2Digits + '"/>';
 	s += '</li>';
 	s += '<li class="nav-item">';
 	s += 	'<label for="' + this.rateTrg + '">Speech rate</label>';
@@ -125,11 +123,8 @@ AudioMath.prototype.getTrainerHTML = function() {
     return s;
 }
 
-AudioMath.prototype.randomNumber = function() {
-	if(this.powerOfTen == "Yes")
-		return Math.floor((Math.random() * 9) + 1) * Math.pow(10, this.digits - 1) ;
-	else
-		return Math.floor(Math.random() * 9 * Math.pow(10, this.digits - 1) + Math.pow(10, this.digits - 1));
+AudioMath.prototype.randomNumber = function(digits) {
+	return Math.floor(Math.random() * 9 * Math.pow(10, digits - 1) + Math.pow(10, digits - 1));
 };
 
 AudioMath.prototype.generateArray = function() {
@@ -137,10 +132,15 @@ AudioMath.prototype.generateArray = function() {
 	this.series = [];
 	
 	for(var i = 0; i < this.rows; i++) {
-		if(this.digits > 1 && this.operation != "*" && this.step == "Yes" && this.powOfTen != "Yes") {
+		if(this.n1Digits > 1 &&  this.n2Digits > 1 && this.operation != "*" && this.step == "Yes") {
 			
-			var first 	= this.randomNumber(this.digits),
-				second 	= this.randomNumber(this.digits);
+			var first 	= this.randomNumber(this.n1Digits),
+				second 	= this.randomNumber(this.n2Digits);
+			if(first % 10 == 0){
+				var c = second;
+				second = first;
+				first = c;
+			}
 			
 			var number = parseInt(second),
 				broken = [];
@@ -175,8 +175,8 @@ AudioMath.prototype.generateArray = function() {
 				this.series.push(", ");
 		} else {
 			
-			var first 	= this.randomNumber(this.digits),
-				second 	= this.randomNumber(this.digits);
+			var first 	= this.randomNumber(this.n1Digits),
+				second 	= this.randomNumber(this.n2Digits);
 				
 			this.series.push(first);
 			this.series.push((this.operation == "*") ? " per " : " " + this.operation + " ");
@@ -203,9 +203,9 @@ AudioMath.prototype.init = function() {
 		$(this).change(function() { 
 
 			_this.rows 			= Number($("#" + _this.rowsTrg).val());
-			_this.digits 		= Number($("#" + _this.digitsTrg).val());
+			_this.n1Digits 		= Number($("#" + _this.n1DigsTrg).val());
+			_this.n2Digits 		= Number($("#" + _this.n2DigsTrg).val());
 			_this.step 			= $("#" + _this.stepTrg).val();
-			_this.powerOfTen 	= $("#" + _this.powTrg).val();
 			_this.equalChar 	= $("#" + _this.equalCharTrg).val();
 			_this.operation 	= $("#" + _this.operationTrg).val();
 			_this.voice			= $("#" + _this.voiceTrg).find("option:selected").attr("data-index");
@@ -296,5 +296,5 @@ AudioMath.prototype.talk = function() {
 	
 	var utterance = new SpeechSynthesisUtterance(this.series.join(""));
 	
-	this.speechUtteranceChunker(utterance, {chunkLength: 58, voice: this.voiceList[this.voice], rate: this.rate}, this.stop.bind(this));
+	this.speechUtteranceChunker(utterance, {chunkLength: this.chunkLength, voice: this.voiceList[this.voice], rate: this.rate}, this.stop.bind(this));
 };
