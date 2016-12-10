@@ -22,6 +22,19 @@ input:focus {
 	bottom: 4vh;
 	left: 4vh;
 }
+.block {
+	display: block;
+}
+.minMAX {
+	display: inline-block!important;
+	width: 25.5vh!important;
+}
+.minMAX.min {
+	margin-right: 4vh;
+}
+input[type=range].slider {
+	width: 55vh!important;
+}
 .btn-standard {
 	background: #3498db;
     color: #fff;
@@ -91,13 +104,16 @@ label[for="nav-trigger"] {
 }
 .nav-item input, .nav-item select {
 	display: block;
-	width: 55vh!important;
+	width: 55vh;
 	font-size: 4vh;
     padding: 2vh;
     border: 0;
     border-radius: 4px;
 }
 @media (min-width:961px) {
+	input[type=range].slider {
+		width: 23vh!important;
+	}
 	.btn-standard {
 		font-size: 4vh;
 	}
@@ -119,7 +135,7 @@ label[for="nav-trigger"] {
 		font-size: 3vh;
 	}
 	.nav-item input, .nav-item select {
-		width: 23vh!important;
+		width: 23vh;
 		font-size: 2vh;
 		padding: 1vh;
 	}

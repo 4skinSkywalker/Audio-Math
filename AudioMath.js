@@ -4,8 +4,10 @@ function AudioMath(name, optionsTrg, trainerTrg) {
 	this.optionsTrg 	= optionsTrg;
 	this.trainerTrg		= trainerTrg;
 	this.rowsTrg 		= "rows";
-	this.n1DigsTrg 		= "first";
-	this.n2DigsTrg 		= "second";
+	this.n1minTrg 		= "first-min";
+	this.n2minTrg 		= "second-min";
+	this.n1MAXTrg 		= "first-MAX";
+	this.n2MAXTrg 		= "second-MAX";
 	this.rateTrg		= "rate";
 	this.stepTrg 		= "step-by-step";
 	this.equalCharTrg	= "equal-char";
@@ -13,8 +15,10 @@ function AudioMath(name, optionsTrg, trainerTrg) {
 	this.voiceTrg		= "voice-list";
 	this.running 		= false;
 	this.rows			= 40;
-	this.n1Digits 		= 2;
-	this.n2Digits 		= 1;
+	this.n1min 			= 10;
+	this.n2min 			= 1;
+	this.n1MAX	 		= 99;
+	this.n2MAX	 		= 9;
 	this.rate			= 1;
 	this.step			= "Yes";
 	this.equalChar		= "=";
@@ -69,12 +73,14 @@ AudioMath.prototype.getOptionsHTML = function() {
 	s += 	'<input type="text" class="option numpad" id="' + this.rowsTrg + '" value="40"/>';
 	s += '</li>';
 	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.n1DigsTrg + '">Digits of num 1</label>';
-	s += 	'<input type="text" class="option numpad" id="' + this.n1DigsTrg + '" value="' + this.n1Digits + '"/>';
+	s += 	'<label class="block" for="' + this.n1Trg + '">Number 1 range:</label>';
+	s += 	'<input type="text" class="option numpad minMAX min" id="' + this.n1minTrg + '" value="' + this.n1min + '"/>';
+	s += 	'<input type="text" class="option numpad minMAX" id="' + this.n1MAXTrg + '" value="' + this.n1MAX + '"/>';
 	s += '</li>';
 	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.n2DigsTrg + '">Digits of num 2</label>';
-	s += 	'<input type="text" class="option numpad" id="' + this.n2DigsTrg + '" value="' + this.n2Digits + '"/>';
+	s += 	'<label class="block" for="' + this.n2Trg + '">Number 2 range:</label>';
+	s += 	'<input type="text" class="option numpad minMAX min" id="' + this.n2minTrg + '" value="' + this.n2min + '"/>';
+	s += 	'<input type="text" class="option numpad minMAX" id="' + this.n2MAXTrg + '" value="' + this.n2MAX + '"/>';
 	s += '</li>';
 	s += '<li class="nav-item">';
 	s += 	'<label for="' + this.rateTrg + '">Speech rate</label>';
@@ -123,8 +129,8 @@ AudioMath.prototype.getTrainerHTML = function() {
     return s;
 }
 
-AudioMath.prototype.randomNumber = function(digits) {
-	return Math.floor(Math.random() * 9 * Math.pow(10, digits - 1) + Math.pow(10, digits - 1));
+AudioMath.prototype.randomNumber = function(min, MAX) {
+	return Math.floor(Math.random() * (MAX - min + 1)) + min;
 };
 
 AudioMath.prototype.generateArray = function() {
@@ -132,10 +138,10 @@ AudioMath.prototype.generateArray = function() {
 	this.series = [];
 	
 	for(var i = 0; i < this.rows; i++) {
-		if(this.n1Digits > 1 &&  this.n2Digits > 1 && this.operation != "*" && this.step == "Yes") {
+		if(this.n1min > 9 &&  this.n2min > 9 && this.operation != "*" && this.step == "Yes") {
 			
-			var first 	= this.randomNumber(this.n1Digits),
-				second 	= this.randomNumber(this.n2Digits);
+			var first 	= this.randomNumber(this.n1min, this.n1MAX),
+				second 	= this.randomNumber(this.n2min, this.n2MAX);
 			if(first % 10 == 0){
 				var c = second;
 				second = first;
@@ -175,8 +181,8 @@ AudioMath.prototype.generateArray = function() {
 				this.series.push(", ");
 		} else {
 			
-			var first 	= this.randomNumber(this.n1Digits),
-				second 	= this.randomNumber(this.n2Digits);
+			var first 	= this.randomNumber(this.n1min, this.n1MAX),
+				second 	= this.randomNumber(this.n2min, this.n2MAX);
 				
 			this.series.push(first);
 			this.series.push((this.operation == "*") ? " per " : " " + this.operation + " ");
@@ -203,8 +209,10 @@ AudioMath.prototype.init = function() {
 		$(this).change(function() { 
 
 			_this.rows 			= Number($("#" + _this.rowsTrg).val());
-			_this.n1Digits 		= Number($("#" + _this.n1DigsTrg).val());
-			_this.n2Digits 		= Number($("#" + _this.n2DigsTrg).val());
+			_this.n1min 		= Number($("#" + _this.n1minTrg).val());
+			_this.n2min 		= Number($("#" + _this.n2minTrg).val());
+			_this.n1MAX 		= Number($("#" + _this.n1MAXTrg).val());
+			_this.n2MAX 		= Number($("#" + _this.n2MAXTrg).val());
 			_this.step 			= $("#" + _this.stepTrg).val();
 			_this.equalChar 	= $("#" + _this.equalCharTrg).val();
 			_this.operation 	= $("#" + _this.operationTrg).val();
