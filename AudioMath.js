@@ -10,61 +10,24 @@ function AudioMath(name, optionsTrg, trainerTrg) {
 	this.n2MAXTrg 		= "second-MAX";
 	this.rateTrg		= "rate";
 	this.stepTrg 		= "step-by-step";
-	this.equalCharTrg	= "equal-char";
+	this.timesSymbolTrg = "times-symbol";
+	this.equalSymbolTrg	= "equal-symbol";
 	this.operationTrg 	= "operation";
 	this.voiceTrg		= "voice-list";
 	this.running 		= false;
 	this.rows			= 40;
 	this.n1min 			= 10;
-	this.n2min 			= 1;
+	this.n2min 			= 10;
 	this.n1MAX	 		= 99;
-	this.n2MAX	 		= 9;
+	this.n2MAX	 		= 99;
 	this.rate			= 1;
 	this.step			= "Yes";
-	this.equalChar		= "=";
+	this.timesSymbol	= "per";
+	this.equalSymbol	= "=";
 	this.operation		= "+";
 	this.voice			= 0;
 	this.series 		= [];
-	this.chunkLength 	= 58;
 }
-
-AudioMath.prototype.speechUtteranceChunker = function (utt, settings, callback) {
-	_this = this;
-	
-    settings = settings || {};
-    var chunkLength = settings && settings.chunkLength || 130;
-    var pattRegex = new RegExp("^.{" + Math.floor(chunkLength / 2) + "," + chunkLength + "}[\.\!\?\,]{1}|^.{1," + chunkLength + "}$|^.{1," + chunkLength + "} ");
-    var txt = (settings && settings.offset !== undefined ? utt.text.substring(settings.offset) : utt.text);
-    var chunkArr = txt.match(pattRegex);
-
-    if(chunkArr !== null) {
-		if(chunkArr[0].length > 2) {
-		
-			var chunk = chunkArr[0].trim();
-			var newUtt = new SpeechSynthesisUtterance(chunk);
-			
-			for(x in settings)
-				if(settings.hasOwnProperty(x) && x != "text")
-				   newUtt[x] = settings[x];
-
-			newUtt.onend = function() {
-				settings.offset = settings.offset || 0;
-				settings.offset += chunk.length + 1;
-				_this.speechUtteranceChunker(utt, settings, callback);
-			}
-			
-			console.log(newUtt);
-			
-			if(this.running)
-				setTimeout(function() {
-					speechSynthesis.speak(newUtt);
-				}, 0);
-		}
-    } else {
-        if(callback !== undefined)
-            callback();
-    }
-};
 
 AudioMath.prototype.getOptionsHTML = function() {
 	var s = "";
@@ -74,13 +37,13 @@ AudioMath.prototype.getOptionsHTML = function() {
 	s += '</li>';
 	s += '<li class="nav-item">';
 	s += 	'<label class="block" for="' + this.n1Trg + '">Number 1 range:</label>';
-	s += 	'<input type="text" class="option numpad minMAX min" id="' + this.n1minTrg + '" value="' + this.n1min + '"/>';
-	s += 	'<input type="text" class="option numpad minMAX" id="' + this.n1MAXTrg + '" value="' + this.n1MAX + '"/>';
+	s += 	'<input type="text" class="option numpad range min" id="' + this.n1minTrg + '" value="' + this.n1min + '"/>';
+	s += 	'<input type="text" class="option numpad range MAX" id="' + this.n1MAXTrg + '" value="' + this.n1MAX + '"/>';
 	s += '</li>';
 	s += '<li class="nav-item">';
 	s += 	'<label class="block" for="' + this.n2Trg + '">Number 2 range:</label>';
-	s += 	'<input type="text" class="option numpad minMAX min" id="' + this.n2minTrg + '" value="' + this.n2min + '"/>';
-	s += 	'<input type="text" class="option numpad minMAX" id="' + this.n2MAXTrg + '" value="' + this.n2MAX + '"/>';
+	s += 	'<input type="text" class="option numpad range min" id="' + this.n2minTrg + '" value="' + this.n2min + '"/>';
+	s += 	'<input type="text" class="option numpad range MAX" id="' + this.n2MAXTrg + '" value="' + this.n2MAX + '"/>';
 	s += '</li>';
 	s += '<li class="nav-item">';
 	s += 	'<label for="' + this.rateTrg + '">Speech rate</label>';
@@ -94,8 +57,15 @@ AudioMath.prototype.getOptionsHTML = function() {
 	s +=	'</select>';
 	s += '</li>';
 	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.equalCharTrg + '">Equal character</label>';
-	s +=	'<select class="option" id="' + this.equalCharTrg + '">';
+	s += 	'<label for="' + this.timesSymbolTrg + '">Multiplication symbol</label>';
+	s +=	'<select class="option" id="' + this.timesSymbolTrg + '">';
+	s +=		'<option>per</option>';
+	s +=		'<option>times</option>';
+	s +=	'</select>';
+	s += '</li>';
+	s += '<li class="nav-item">';
+	s += 	'<label for="' + this.equalSymbolTrg + '">Equal symbol</label>';
+	s +=	'<select class="option" id="' + this.equalSymbolTrg + '">';
 	s +=		'<option>=</option>';
 	s +=		'<option>è</option>';
 	s +=		'<option>es</option>';
@@ -120,7 +90,7 @@ AudioMath.prototype.getOptionsHTML = function() {
 
 AudioMath.prototype.getTrainerHTML = function() {
     var s = "";
-	s += '<div id="abacus"></div>'
+	s += '<div id="trainer"></div>';
 	s += '<div id="dashboard">'
 	s +=	'<input id="new" class="btn-standard" type="button" value="New" onclick="' + this.name + '.new();"/>'
 	s +=	'<input class="btn-standard" type="button" value="Replay" onclick="' + this.name + '.replay();"/>'
@@ -138,7 +108,9 @@ AudioMath.prototype.generateArray = function() {
 	this.series = [];
 	
 	for(var i = 0; i < this.rows; i++) {
-		if(this.n1min > 9 &&  this.n2min > 9 && this.operation != "*" && this.step == "Yes") {
+		var procedure = [];
+		
+		if(this.n1min > 9 &&  this.n2min > 9 && this.step == "Yes" && this.operation == "+") {
 			
 			var first 	= this.randomNumber(this.n1min, this.n1MAX),
 				second 	= this.randomNumber(this.n2min, this.n2MAX);
@@ -148,8 +120,7 @@ AudioMath.prototype.generateArray = function() {
 				first = c;
 			}
 			
-			var number = parseInt(second),
-				broken = [];
+			var broken = [];
 			(function breakDown(num){
 				
 				if(num<=0)return false;
@@ -160,37 +131,32 @@ AudioMath.prototype.generateArray = function() {
 
 				broken.push(divisor*quotient);
 				breakDown(num % divisor);
-			})(number);
+			})(second);
 			
-			this.series.push(first);
-			this.series.push(" + ");
-			this.series.push(second);
-			this.series.push(" " + this.equalChar + " ");
+			procedure.push(first + " + " + second);
+			procedure.push(" " + this.equalSymbol + " ");
 			var tmp = first;
 			for(var j = 0; j < broken.length; j++) {
 				
 				tmp = tmp + broken[j];
-				this.series.push(tmp);
 				if(broken[j+1]) {
-					this.series.push(" + " + broken[j+1]);
-					this.series.push(" " + this.equalChar + " ");
+					procedure.push(tmp + " + " + broken[j+1]);
+					procedure.push(this.equalSymbol);
 				}
 			}
+			procedure.push(eval(first + second));
+			this.series.push(procedure);
 
-			if(i < this.rows - 1)
-				this.series.push(", ");
 		} else {
 			
 			var first 	= this.randomNumber(this.n1min, this.n1MAX),
-				second 	= this.randomNumber(this.n2min, this.n2MAX);
+				second 	= this.randomNumber(this.n2min, this.n2MAX),
+				readableSecond = (this.operation == "*") ? " " + this.timesSymbol + " " + second : " " + this.operation + " " + second;
 				
-			this.series.push(first);
-			this.series.push((this.operation == "*") ? " per " : " " + this.operation + " ");
-			this.series.push(second);
-			this.series.push(" " + this.equalChar + " ");
-			this.series.push(eval(first + this.operation + second));
-			if(i < this.rows - 1)
-				this.series.push(", ");
+			procedure.push(first + readableSecond);
+			procedure.push(this.equalSymbol);
+			procedure.push(eval(first + this.operation + second));
+			this.series.push(procedure);
 		}
 	}
 	
@@ -214,7 +180,8 @@ AudioMath.prototype.init = function() {
 			_this.n1MAX 		= Number($("#" + _this.n1MAXTrg).val());
 			_this.n2MAX 		= Number($("#" + _this.n2MAXTrg).val());
 			_this.step 			= $("#" + _this.stepTrg).val();
-			_this.equalChar 	= $("#" + _this.equalCharTrg).val();
+			_this.timesSymbol 	= $("#" + _this.timesSymbolTrg).val();
+			_this.equalSymbol 	= $("#" + _this.equalSymbolTrg).val();
 			_this.operation 	= $("#" + _this.operationTrg).val();
 			_this.voice			= $("#" + _this.voiceTrg).find("option:selected").attr("data-index");
 		});
@@ -263,7 +230,7 @@ AudioMath.prototype.new = function() {
 			$("#new").prop("disabled", true);
 			
 			this.generateArray();
-			this.talk();
+			this.run();
 		}
 	);
 };
@@ -277,7 +244,7 @@ AudioMath.prototype.replay = function() {
 				this.running = true;
 				$("#new").prop("disabled", true);
 
-				this.talk();
+				this.run();
 			}
 		);
 	} else {
@@ -300,9 +267,30 @@ AudioMath.prototype.stop = function() {
 	}
 };
 
-AudioMath.prototype.talk = function() {
+AudioMath.prototype.run = function(j, i) {
 	
-	var utterance = new SpeechSynthesisUtterance(this.series.join(""));
+	this.j = (j == undefined) ? 0 : j;
+	this.i = (i == undefined) ? 0 : i;
 	
-	this.speechUtteranceChunker(utterance, {chunkLength: this.chunkLength, voice: this.voiceList[this.voice], rate: this.rate}, this.stop.bind(this));
+	if(this.i < this.series.length) {
+		if(this.running) {
+			if(this.j >= this.series[this.i].length) {
+				this.j = 0;
+				this.i++;
+			}
+
+			$("#trainer").text(this.series[this.i][this.j]);
+			var newUtt = new SpeechSynthesisUtterance();
+			newUtt.text = this.series[this.i][this.j]; 
+			newUtt.voice = this.voiceList[this.voice]; 
+			newUtt.rate = this.rate;
+			newUtt.onend = this.run.bind(this, this.j+1, this.i);
+			console.log(newUtt);
+			speechSynthesis.speak(newUtt);
+		}
+	} else {
+		
+		this.running = false;
+		$("#trainer").text("");
+	}
 };
