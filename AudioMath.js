@@ -290,7 +290,7 @@ AudioMath.prototype.run = function(j, i) {
 		}
 	} else {
 		
-		this.running = false;
 		$("#trainer").text("");
+		this.stop();
 	}
 };
