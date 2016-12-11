@@ -272,13 +272,14 @@ AudioMath.prototype.run = function(j, i) {
 	this.j = (j == undefined) ? 0 : j;
 	this.i = (i == undefined) ? 0 : i;
 	
-	if(this.i < this.series.length) {
-		if(this.running) {
-			if(this.j >= this.series[this.i].length) {
-				this.j = 0;
-				this.i++;
-			}
-
+	if(this.running) {
+		if(this.j >= this.series[this.i].length) {
+			this.j = 0;
+			this.i++;
+		}
+		
+		if(this.i < this.series.length) {
+			
 			$("#trainer").text(this.series[this.i][this.j]);
 			var newUtt = new SpeechSynthesisUtterance();
 			newUtt.text = this.series[this.i][this.j]; 
@@ -287,10 +288,10 @@ AudioMath.prototype.run = function(j, i) {
 			newUtt.onend = this.run.bind(this, this.j+1, this.i);
 			console.log(newUtt);
 			speechSynthesis.speak(newUtt);
-		}
-	} else {
+		} else {
 		
-		$("#trainer").text("");
-		this.stop();
+			$("#trainer").text("");
+			this.stop();
+		}
 	}
 };
