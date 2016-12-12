@@ -269,7 +269,6 @@ AudioMath.prototype.continue = function() {
 			
 			this.running = true;
 			$("#new").prop("disabled", true);
-			$("#stop-continue").unbind("click");
 			$('#stop-continue').prop("onclick", null).attr("onclick", this.name + ".stop()");
 			$("#stop-continue").val("Stop");
 			this.run(this.j, this.i, this.count);
