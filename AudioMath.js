@@ -163,7 +163,7 @@ AudioMath.prototype.generateArray = function() {
 			var first 	= this.randomNumber(this.n1min, this.n1MAX),
 				second 	= this.randomNumber(this.n2min, this.n2MAX);
 				
-			procedure.push(first + " + " + second + " = " + first + second);
+			procedure.push(first + " + " + second + " = " + eval(first + second));
 			this.series.push(procedure);
 		}
 	}
