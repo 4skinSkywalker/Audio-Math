@@ -187,13 +187,13 @@ AudioMath.prototype.init = function() {
 	$(".option").each(function() {
 		$(this).change(function() { 
 
-			_this.rows 			= Number($("#" + _this.rowsTrg).val());
-			_this.n1min 		= Number($("#" + _this.n1minTrg).val());
-			_this.n2min 		= Number($("#" + _this.n2minTrg).val());
-			_this.n1MAX 		= Number($("#" + _this.n1MAXTrg).val());
-			_this.n2MAX 		= Number($("#" + _this.n2MAXTrg).val());
-			_this.steps 		= $("#" + _this.stepsTrg).val();
-			_this.voice			= $("#" + _this.voiceTrg).find("option:selected").attr("data-index");
+			_this.rows 	= Number($("#" + _this.rowsTrg).val());
+			_this.n1min = Number($("#" + _this.n1minTrg).val());
+			_this.n2min = Number($("#" + _this.n2minTrg).val());
+			_this.n1MAX = Number($("#" + _this.n1MAXTrg).val());
+			_this.n2MAX = Number($("#" + _this.n2MAXTrg).val());
+			_this.steps = $("#" + _this.stepsTrg).val();
+			_this.voice	= $("#" + _this.voiceTrg).find("option:selected").attr("data-index");
 		});
 	});
 	
