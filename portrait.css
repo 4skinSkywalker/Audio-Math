@@ -14,6 +14,9 @@ input:focus {
     text-align: center;
     transform: translate(-50%, -50%);
 }
+#calculator td img {
+    width: 8vh;
+}
 #dashboard {
 	position: absolute;
 	bottom: 2vh;

@@ -67,7 +67,7 @@ AudioMath.prototype.getTrainerHTML = function() {
 	s +=	'<input id="new" class="btn-standard" type="button" value="New" onclick="' + this.name + '.new();"/>'
 	s +=	'<input class="btn-standard" type="button" value="Replay" onclick="' + this.name + '.replay();"/>'
 	s +=	'<input id="stop-continue" class="btn-standard" type="button" value="Stop"/>'
-	s +=	'<input class="btn-standard" type="button" value="Reset" onclick="' + this.name + '.soroban.reset();"/>'
+	//s +=	'<input class="btn-standard" type="button" value="Reset" onclick="' + this.name + '.soroban.reset();"/>'
 	s += '</div>'
     return s;
 }
@@ -221,6 +221,8 @@ AudioMath.prototype.new = function() {
 			
 			this.running = true;
 			$("#new").prop("disabled", true);
+			$('#stop-continue').prop("onclick", null).attr("onclick", this.name + ".stop()");
+			$("#stop-continue").val("Stop");
 			
 			this.generateArray();
 			this.run();
@@ -236,7 +238,8 @@ AudioMath.prototype.replay = function() {
 				
 				this.running = true;
 				$("#new").prop("disabled", true);
-
+				$('#stop-continue').prop("onclick", null).attr("onclick", this.name + ".stop()");
+				$("#stop-continue").val("Stop");
 				this.run();
 			}
 		);

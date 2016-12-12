@@ -14,8 +14,12 @@ input:focus {
     text-align: center;
     transform: translate(-50%, -50%);
 }
+#calculator td img {
+    width: 16vh;
+}
 #dashboard {
 	position: absolute;
+	width: 28vh;
 	bottom: 4vh;
 	left: 4vh;
 }
@@ -34,12 +38,12 @@ input[type=range].slider {
 }
 .btn-standard {
 	background: #333;
-    color: #888;
-    margin-right: 2vh;
-    padding: 1vh 2vh;
-    font-size: 6vh;
-    border: 0;
-    border-radius: 4px;
+	color: #888;
+	margin-top: 2vh;
+	padding: 1vh 2vh;
+	font-size: 6vh;
+	border: 0;
+	border-radius: 4px;
 }
 .btn-standard[disabled] {
 	background: #222;
@@ -110,16 +114,19 @@ label[for="nav-trigger"] {
 	input[type=range].slider {
 		width: 23vh!important;
 	}
+	.range {
+		width: 9.5vh!important;
+	}
+	#calculator td img {
+		width: 12vh;
+	}
+	#dashboard {
+		width: 100%;
+	}
 	.btn-standard {
+		margin-top: 0;
+		margin-right: 2vh;
 		font-size: 4vh;
-	}
-	.btn-standard:hover {
-		color: #000;
-		background: #f1c40f;
-	}
-	.btn-standard[disabled]:hover {
-		color: #fff;
-		background: #2D7DED;
 	}
 	.nav-trigger:checked + label {
 		left: 35vh;
