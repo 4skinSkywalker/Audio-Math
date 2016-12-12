@@ -133,8 +133,6 @@ AudioMath.prototype.generateArray = function() {
 						procedure.push("=");
 					}
 				}
-			} else {
-				procedure.push("=");
 			}
 			procedure.push(first + second);
 			this.series.push(procedure);
