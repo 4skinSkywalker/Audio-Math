@@ -15,7 +15,7 @@ input:focus {
     transform: translate(-50%, -50%);
 }
 #calculator td img {
-    width: 16vh;
+    width: 23.6vh;
 }
 #dashboard {
 	position: absolute;

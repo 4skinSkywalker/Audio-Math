@@ -22,7 +22,7 @@ function AudioMath(name, optionsTrg, trainerTrg) {
 	this.steps			= "Beginner";
 	this.voice			= 0;
 	this.series 		= [];
-	this.soroban 		= new Abacus(this.sorobanTrg, this.name + ".soroban", 7, "Soroban", 0, "soroban/", "Soroban_image_bead.png", "Soroban_image_nobead.png", "Soroban_image_bottomborder.png", "Soroban_image_middlesep.png", "Soroban_image_top.png");
+	this.soroban 		= new Abacus(this.sorobanTrg, this.name + ".soroban", 5, "Soroban", 0, "soroban/", "Soroban_image_bead.png", "Soroban_image_nobead.png", "Soroban_image_bottomborder.png", "Soroban_image_middlesep.png", "Soroban_image_top.png");
 }
 
 AudioMath.prototype.getOptionsHTML = function() {
