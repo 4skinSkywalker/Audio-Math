@@ -134,7 +134,6 @@ AudioMath.prototype.generateArray = function() {
 					}
 				}
 			} else {
-				procedure.push(first + " + " + second);
 				procedure.push("=");
 			}
 			procedure.push(first + second);
