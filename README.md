@@ -1,2 +1,2 @@
 # Audio Math
-Listen to learn and improve your arithmetic skills (only addition and multiplication for the moment)
+Listen and watch to learn and improve your arithmetic skills using both side of your brain (only addition for the moment)
