@@ -10,6 +10,7 @@ function AudioMath(name, optionsTrg, trainerTrg) {
 	this.n2MAXTrg 		= "second-MAX";
 	this.rateTrg		= "rate";
 	this.stepsTrg 		= "steps";
+	this.overlayTrg 	= "overlay";
 	this.voiceTrg		= "voice-list";
 	this.sorobanTrg		= "calculator";
 	this.running 		= false;
@@ -48,11 +49,18 @@ AudioMath.prototype.getOptionsHTML = function() {
 	s += '<li class="nav-item">';
 	s += 	'<label for="' + this.stepsTrg + '">Steps</label>';
 	s +=	'<select class="option" id="' + this.stepsTrg + '">';
-	s +=		'<option>Beginner (visual)</option>';
-	s +=		'<option>Beginner (only audio)</option>';
-	s += 		'<option>Advanced (visual)</option>';
-	s +=		'<option>Advanced (only audio)</option>';
-	s +=		'<option>Master (mental)</option>';
+	s +=		'<option value="beg-vis">Beginner (visual)</option>';
+	s +=		'<option value="beg-aud">Beginner (only audio)</option>';
+	s += 		'<option value="adv-vis">Advanced (visual)</option>';
+	s +=		'<option value="adv-aud">Advanced (only audio)</option>';
+	s +=		'<option value="master">Master (mental)</option>';
+	s +=	'</select>';
+	s += '</li>';
+	s += '<li class="nav-item">';
+	s += 	'<label for="' + this.overlayTrg + '">Darker overlay</label>';
+	s +=	'<select class="option" id="' + this.overlayTrg + '">';
+	s +=		'<option value="No">No</option>';
+	s +=		'<option value="Yes">Yes</option>';
 	s +=	'</select>';
 	s += '</li>';
 	s += '<li class="nav-item">';
@@ -69,7 +77,7 @@ AudioMath.prototype.getTrainerHTML = function() {
 	s +=	'<input id="new" class="btn-standard" type="button" value="New" onclick="' + this.name + '.new();"/>'
 	s +=	'<input class="btn-standard" type="button" value="Replay" onclick="' + this.name + '.replay();"/>'
 	s +=	'<input id="stop-continue" class="btn-standard" type="button" value="Stop"/>'
-	//s +=	'<input class="btn-standard" type="button" value="Reset" onclick="' + this.name + '.soroban.reset();"/>'
+	s +=	'<input class="btn-standard" type="button" value="Reset" onclick="' + this.name + '.soroban.reset();"/>'
 	s += '</div>'
     return s;
 }
@@ -84,7 +92,7 @@ AudioMath.prototype.generateArray = function() {
 	
 	for(var i = 0; i < this.rows; i++) {
 		var procedure = [];
-		if(this.n1MAX - this.n1min > 9 && this.n2MAX - this.n2min > 9) {
+		if(this.n1min > 9 && this.n2min > 9) {
 			
 			var first 	= this.randomNumber(this.n1min, this.n1MAX),
 				second 	= this.randomNumber(this.n2min, this.n2MAX);
@@ -110,7 +118,7 @@ AudioMath.prototype.generateArray = function() {
 			
 			procedure.push(first + " + " + second + " = ");
 				
-			if(this.steps == "Beginner (visual)") {
+			if(this.steps == "beg-vis") {
 
 				procedure.push(first);
 				for(var j = 0; j < broken.length; j++) {
@@ -122,7 +130,7 @@ AudioMath.prototype.generateArray = function() {
 				}
 				procedure.push("=");
 				
-			} else if(this.steps == "Beginner (only audio)") {
+			} else if(this.steps == "beg-aud") {
 				
 				procedure.push(first);
 				for(var j = 0; j < broken.length; j++) {
@@ -133,7 +141,7 @@ AudioMath.prototype.generateArray = function() {
 				}
 				procedure.push("=");
 				
-			} else if(this.steps == "Advanced (visual)") {
+			} else if(this.steps == "adv-vis") {
 				
 				var tmp = first;
 				for(var j = 0; j < broken.length; j++) {
@@ -146,7 +154,7 @@ AudioMath.prototype.generateArray = function() {
 					}
 				}
 				
-			} else if(this.steps == "Advanced (only audio)") {
+			} else if(this.steps == "adv-aud") {
 				
 				var tmp = first;
 				for(var j = 0; j < broken.length; j++) {
@@ -190,6 +198,20 @@ AudioMath.prototype.init = function() {
 			_this.n2MAX = Number($("#" + _this.n2MAXTrg).val());
 			_this.steps = $("#" + _this.stepsTrg).val();
 			_this.voice	= $("#" + _this.voiceTrg).find("option:selected").attr("data-index");
+			
+			if($("#" + _this.overlayTrg).val() == "Yes"){
+				
+				if(!$("#" + _this.sorobanTrg).hasClass("overlay")) {
+					$("#" + _this.sorobanTrg).addClass("overlay");
+					$("#" + _this.sorobanTrg).addClass("overlay");
+				}
+			} else {
+				
+				if($("#" + _this.sorobanTrg).hasClass("overlay")) {
+					$("#" + _this.sorobanTrg).removeClass("overlay");
+					$("#" + _this.sorobanTrg).removeClass("overlay");
+				}
+			}
 		});
 	});
 	
@@ -312,7 +334,7 @@ AudioMath.prototype.run = function(j, i, tmp) {
 		if(this.i < this.series.length) {
 			if(!isNaN(this.series[this.i][this.j])) {
 				
-				if(this.steps.search("audio") < 0 && ((this.n1MAX - this.n1min > 9 && this.n2MAX - this.n2min > 9 && this.j > 0 && this.j < this.series[this.i].length-1) || ((this.n1MAX - this.n1min < 9 || this.n2MAX - this.n2min < 9) && this.j < this.series[this.i].length-2))) {
+				if(this.steps.search("audio") < 0 && ((this.n1min > 9 && this.n2min > 9 && this.j > 0 && this.j < this.series[this.i].length-1) || ((this.n1MAX < 9 || this.n2MAX < 9) && this.j < this.series[this.i].length-2))) {
 					
 					this.count += this.series[this.i][this.j];
 					this.soroban.assignstring(this.count);
@@ -484,7 +506,7 @@ function v046(v022) {
     var v036 = this.v017;
     var v021 = this.v018;
 	var code = "";
-    code += "<tr><td><table cellpadding=0 cellspacing=0>";
+	code += '<table class="soroban-upper" cellpadding=0 cellspacing=0>';
     for (v015 = 1; v015 < v036 + 2; v015++) {
         code += "<tr>";
         for (v016 = v021 - 1; v016 >= 0; --v016) {
@@ -500,7 +522,7 @@ function v046(v022) {
     }
     code += "</table>";
     v036 = this.v027;
-    code += "<table cellpadding=0 cellspacing=0>";
+    code += '<table class="soroban-lower" cellpadding=0 cellspacing=0>';
     for (v015 = 0; v015 < v036 + 2; v015++) {
         if (v015 == 0) 
 			code += '<tr style="line-height:6px;">';
@@ -522,7 +544,6 @@ function v046(v022) {
         code += "</tr>";
     }
     code += "</table>";
-	code += "</td></tr></table>";
 	$("#" + this.target).append(code);
     this.v029 = 1;
     return;
