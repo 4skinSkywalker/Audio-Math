@@ -1,66 +1,42 @@
 function AudioMath(name, optionsTrg, trainerTrg) {
-
 	this.name 			= name;
 	this.optionsTrg 	= optionsTrg;
 	this.trainerTrg		= trainerTrg;
 	this.rowsTrg 		= "rows";
-	this.n1minTrg 		= "first-min";
-	this.n2minTrg 		= "second-min";
-	this.n1MAXTrg 		= "first-MAX";
-	this.n2MAXTrg 		= "second-MAX";
+	this.digitsTrg 		= "digits";
+	this.operationTrg 	= "operation";
 	this.rateTrg		= "rate";
-	this.stepsTrg 		= "steps";
-	this.overlayTrg 	= "overlay";
-	this.voiceTrg		= "voice-list";
-	this.sorobanTrg		= "calculator";
+	this.voiceTrg		= "voice";
+	this.sorobanTrg		= "soroban";
 	this.running 		= false;
 	this.rows			= 40;
-	this.n1min 			= 10;
-	this.n2min 			= 10;
-	this.n1MAX	 		= 99;
-	this.n2MAX	 		= 99;
-	this.rate			= 1;
-	this.steps			= "Beginner (visual)";
+	this.digits			= 2;
+	this.rate			= "1.0";
+	this.operation		= "+";
 	this.voice			= 0;
 	this.series 		= [];
-	this.soroban 		= new Abacus(this.sorobanTrg, this.name + ".soroban", 5, "Soroban", 0, "soroban/", "upper-bead.png", "lower-bead.png", "no-bead.png", "middle-rod.png");
+	this.soroban 		= new Abacus(this.sorobanTrg, this.name, 5, "Soroban", 0, "soroban/", "upper-bead.png", "lower-bead.png", "no-bead.png", "middle-rod.png");
 }
 
 AudioMath.prototype.getOptionsHTML = function() {
 	var s = "";
 	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.rowsTrg + '">Rows</label>';
-	s += 	'<input type="text" class="option numpad" id="' + this.rowsTrg + '" value="40"/>';
+	s += 	'<span class="range-label">Rows: </span><span id="' + this.rowsTrg + '-span" class="range-label">' + this.rows + '</span>';
+	s +=	'<input type="range" class="slider" id="' + this.rowsTrg + '" min="1" max="500" step="1" value="' + this.rows + '">';
 	s += '</li>';
 	s += '<li class="nav-item">';
-	s += 	'<label class="block" for="' + this.n1Trg + '">Number 1 range:</label>';
-	s += 	'<input type="text" class="option numpad range min" id="' + this.n1minTrg + '" value="' + this.n1min + '"/>';
-	s += 	'<input type="text" class="option numpad range MAX" id="' + this.n1MAXTrg + '" value="' + this.n1MAX + '"/>';
+	s += 	'<span class="range-label">Digits: </span><span id="' + this.digitsTrg + '-span" class="range-label">' + this.digits + '</span>';
+	s +=	'<input type="range" class="slider" id="' + this.digitsTrg + '" min="2" max="4" step="1" value="' + this.digits + '">';
 	s += '</li>';
 	s += '<li class="nav-item">';
-	s += 	'<label class="block" for="' + this.n2Trg + '">Number 2 range:</label>';
-	s += 	'<input type="text" class="option numpad range min" id="' + this.n2minTrg + '" value="' + this.n2min + '"/>';
-	s += 	'<input type="text" class="option numpad range MAX" id="' + this.n2MAXTrg + '" value="' + this.n2MAX + '"/>';
+	s += 	'<span class="range-label">Speech rate: </span><span id="' + this.rateTrg + '-span" class="range-label">' + this.rate + '</span>';
+	s +=	'<input type="range" class="slider" id="' + this.rateTrg + '" min="0.1" max="3" step="0.1" value="' + this.rate + '">';
 	s += '</li>';
 	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.rateTrg + '">Speech rate</label>';
-	s +=	'<input type="range" class="slider" id="' + this.rateTrg + '" min="0.33" max="3.33" step="0.001" value="' + this.rate + '">';
-	s += '</li>';
-	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.stepsTrg + '">Steps</label>';
-	s +=	'<select class="option" id="' + this.stepsTrg + '">';
-	s +=		'<option value="beg-vis">Beginner (visual)</option>';
-	s +=		'<option value="beg-aud">Beginner (only audio)</option>';
-	s += 		'<option value="adv-vis">Advanced (visual)</option>';
-	s +=		'<option value="adv-aud">Advanced (only audio)</option>';
-	s +=		'<option value="master">Master (mental)</option>';
-	s +=	'</select>';
-	s += '</li>';
-	s += '<li class="nav-item">';
-	s += 	'<label for="' + this.overlayTrg + '">Darker overlay</label>';
-	s +=	'<select class="option" id="' + this.overlayTrg + '">';
-	s +=		'<option value="No">No</option>';
-	s +=		'<option value="Yes">Yes</option>';
+	s += 	'<label for="' + this.operationTrg + '">Operation</label>';
+	s +=	'<select class="option" id="' + this.operationTrg + '">';
+	s +=		'<option>+</option>';
+	s +=		'<option>-</option>';
 	s +=	'</select>';
 	s += '</li>';
 	s += '<li class="nav-item">';
@@ -72,18 +48,20 @@ AudioMath.prototype.getOptionsHTML = function() {
 
 AudioMath.prototype.getTrainerHTML = function() {
     var s = "";
-	s += '<div id="' + this.sorobanTrg + '"></div>';
+	s += '<div style="position: absolute; top: 50%; left: 50%; text-align: center; transform: translate(-50%, -50%);" id="' + this.sorobanTrg + '"></div>';
 	s += '<div id="dashboard">'
 	s +=	'<input id="new" class="btn-standard" type="button" value="New" onclick="' + this.name + '.new();"/>'
-	s +=	'<input class="btn-standard" type="button" value="Replay" onclick="' + this.name + '.replay();"/>'
 	s +=	'<input id="stop-continue" class="btn-standard" type="button" value="Stop"/>'
-	s +=	'<input class="btn-standard" type="button" value="Reset" onclick="' + this.name + '.soroban.reset();"/>'
 	s += '</div>'
     return s;
 }
 
-AudioMath.prototype.randomNumber = function(min, MAX) {
-	return Math.floor(Math.random() * (MAX - min + 1)) + min;
+AudioMath.prototype.randomNumber = function(negative, partial) {
+
+	if(this.operation == "-" && negative)
+		return Math.floor(Math.random() * partial + 1);
+	else
+		return Math.floor(Math.random() * 9 * Math.pow(10, this.digits - 1) + Math.pow(10, this.digits - 1));
 };
 
 AudioMath.prototype.generateArray = function() {
@@ -91,89 +69,43 @@ AudioMath.prototype.generateArray = function() {
 	this.series = [];
 	
 	for(var i = 0; i < this.rows; i++) {
-		var procedure = [];
-		if(this.n1min > 9 && this.n2min > 9) {
+		var procedure = [],
+			sign = (this.operation == "+")? "+ ": "-";
 			
-			var first 	= this.randomNumber(this.n1min, this.n1MAX),
-				second 	= this.randomNumber(this.n2min, this.n2MAX);
+		var first 	= this.randomNumber(0, 0),
+			second 	= this.randomNumber(1, first);
 			
-			if(first % 10 == 0){
+		if(this.operation == "+") {
+			if(first % 10 == 0) {
 				var c = second;
 				second = first;
 				first = c;
 			}
-			
-			var broken = [];
-			(function breakDown(num){
-				
-				if(num<=0) return false;
-				num = num.toFixed(0);
-
-				var divisor = Math.pow(10, num.length-1),
-					quotient = Math.floor(num/divisor);
-
-				broken.push(divisor*quotient);
-				breakDown(num % divisor);
-			})(second);
-			
-			procedure.push(first + " + " + second + " = ");
-				
-			if(this.steps == "beg-vis") {
-
-				procedure.push(first);
-				for(var j = 0; j < broken.length; j++) {
-					
-					if(broken[j]) {
-						procedure.push("+");
-						procedure.push(broken[j]);
-					}
-				}
-				procedure.push("=");
-				
-			} else if(this.steps == "beg-aud") {
-				
-				procedure.push(first);
-				for(var j = 0; j < broken.length; j++) {
-					
-					if(broken[j]) {
-						procedure.push("+ " + broken[j]);
-					}
-				}
-				procedure.push("=");
-				
-			} else if(this.steps == "adv-vis") {
-				
-				var tmp = first;
-				for(var j = 0; j < broken.length; j++) {
-					tmp = tmp + broken[j];
-					if(broken[j+1]) {
-						procedure.push(tmp);
-						procedure.push("+");
-						procedure.push(broken[j+1]);
-						procedure.push("=");
-					}
-				}
-				
-			} else if(this.steps == "adv-aud") {
-				
-				var tmp = first;
-				for(var j = 0; j < broken.length; j++) {
-					tmp = tmp + broken[j];
-					if(broken[j+1]) {
-						procedure.push(tmp + " + " + broken[j+1] + " = ");
-					}
-				}
-			}
-			procedure.push(first + second);
-			this.series.push(procedure);
-		} else {
-			
-			var first 	= this.randomNumber(this.n1min, this.n1MAX),
-				second 	= this.randomNumber(this.n2min, this.n2MAX);
-				
-			procedure.push(first + " + " + second + " = " + eval(first + second));
-			this.series.push(procedure);
 		}
+		
+		var broken = [];
+		(function breakDown(num) {
+			if(num<=0) return false;
+			num = num.toFixed(0);
+
+			var divisor = Math.pow(10, num.length-1),
+				quotient = Math.floor(num/divisor);
+
+			broken.push(divisor*quotient);
+			breakDown(num % divisor);
+		})(second);
+		
+		procedure.push(first + " " + sign + second + " =");
+		procedure.push(first);
+		for(var j = 0; j < broken.length; j++) {
+			
+			if(broken[j]) {
+				procedure.push(sign + broken[j]);
+			}
+		}
+		procedure.push("=");	
+		procedure.push(eval(first + this.operation + second));
+		this.series.push(procedure);
 	}
 	return this.series;
 };
@@ -190,48 +122,31 @@ AudioMath.prototype.init = function() {
 	
 	$(".option").each(function() {
 		$(this).change(function() { 
-
-			_this.rows 	= Number($("#" + _this.rowsTrg).val());
-			_this.n1min = Number($("#" + _this.n1minTrg).val());
-			_this.n2min = Number($("#" + _this.n2minTrg).val());
-			_this.n1MAX = Number($("#" + _this.n1MAXTrg).val());
-			_this.n2MAX = Number($("#" + _this.n2MAXTrg).val());
-			_this.steps = $("#" + _this.stepsTrg).val();
+			_this.operation = $("#" + _this.operationTrg).val();
 			_this.voice	= $("#" + _this.voiceTrg).find("option:selected").attr("data-index");
-			
-			if($("#" + _this.overlayTrg).val() == "Yes"){
-				
-				if(!$("#" + _this.sorobanTrg).hasClass("overlay")) {
-					$("#" + _this.sorobanTrg).addClass("overlay");
-					$("#" + _this.sorobanTrg).addClass("overlay");
-				}
-			} else {
-				
-				if($("#" + _this.sorobanTrg).hasClass("overlay")) {
-					$("#" + _this.sorobanTrg).removeClass("overlay");
-					$("#" + _this.sorobanTrg).removeClass("overlay");
-				}
-			}
 		});
 	});
-	
+	$(document).on("input change", "#"+_this.rowsTrg, function() {
+		_this.rows 	= Number($("#" + _this.rowsTrg).val());
+		$("#" + _this.rowsTrg + "-span").text(_this.rows);
+	});
+	$(document).on("input change", "#"+_this.digitsTrg, function() {
+		_this.digits = Number($("#" + _this.digitsTrg).val());
+		$("#" + _this.digitsTrg + "-span").text(_this.digits);
+	});	
 	$(document).on("input change", "#"+_this.rateTrg, function() {
-		
 		_this.rate = Number($(this).val());
+		$("#" + _this.rateTrg + "-span").text(_this.rate);
 	});
 	
 	function populateVoiceList() {
-
 		if(!$("#" + _this.voiceTrg).val()) {
-			
 			_this.voiceList = speechSynthesis.getVoices();
-			
 			$.each(_this.voiceList, function(index, value) {
 				$("#" + _this.voiceTrg).append("<option data-index=" + index + ">" + value.name.replace(/Google/g, "") + "</option>");
 			});
 		}
 	}
-
 	populateVoiceList();
 	if(speechSynthesis.onvoiceschanged !== undefined) {
 		speechSynthesis.onvoiceschanged = populateVoiceList;
@@ -241,9 +156,7 @@ AudioMath.prototype.init = function() {
 };
 
 AudioMath.prototype.isRunning = function(func) {
-	
 	if(!this.running) {
-		
 		speechSynthesis.cancel();
 		func.bind(this)();
 	} else {
@@ -252,11 +165,10 @@ AudioMath.prototype.isRunning = function(func) {
 };
 
 AudioMath.prototype.new = function() {
-	
 	this.isRunning(
 		function() {
-			
 			this.running = true;
+			
 			$("#new").prop("disabled", true);
 			$('#stop-continue').prop("onclick", null).attr("onclick", this.name + ".stop()");
 			$("#stop-continue").val("Stop");
@@ -267,32 +179,12 @@ AudioMath.prototype.new = function() {
 	);
 };
 
-AudioMath.prototype.replay = function() {
-	
-	if(this.series.length > 0) {
-		this.isRunning(
-			function() {
-				
-				this.running = true;
-				$("#new").prop("disabled", true);
-				$('#stop-continue').prop("onclick", null).attr("onclick", this.name + ".stop()");
-				$("#stop-continue").val("Stop");
-				this.run();
-			}
-		);
-	} else {
-		alert("Nothing to repeat, click on New.");
-	}
-};
-
 AudioMath.prototype.stop = function() {
-	
 	if(this.series.length > 0) {
 		if(this.running) {
-
 			speechSynthesis.cancel();
-			
 			this.running = false;
+			
 			$("#new").prop("disabled", false);
 			$('#stop-continue').prop("onclick", null).attr("onclick", this.name + ".continue()");
 			$("#stop-continue").val("Continue");
@@ -303,14 +195,14 @@ AudioMath.prototype.stop = function() {
 };
 
 AudioMath.prototype.continue = function() {
-	
 	if(this.series.length > 0) {
 		if(!this.running) {
-			
 			this.running = true;
+			
 			$("#new").prop("disabled", true);
 			$('#stop-continue').prop("onclick", null).attr("onclick", this.name + ".stop()");
 			$("#stop-continue").val("Stop");
+			
 			this.run(this.j, this.i, this.count);
 		}
 	}
@@ -323,22 +215,18 @@ AudioMath.prototype.run = function(j, i, tmp) {
 	this.count = tmp || 0;
 	
 	if(this.running) {
-		if(this.j >= this.series[this.i].length) {
-			
+		if(this.j > this.series[this.i].length-1) {
 			this.j = 0;
 			this.i++;
 			this.count = 0;
 			this.soroban.reset();
 		}
-		
 		if(this.i < this.series.length) {
-			if(!isNaN(this.series[this.i][this.j])) {
-				
-				if(this.steps.search("audio") < 0 && ((this.n1min > 9 && this.n2min > 9 && this.j > 0 && this.j < this.series[this.i].length-1) || ((this.n1MAX < 9 || this.n2MAX < 9) && this.j < this.series[this.i].length-2))) {
-					
-					this.count += this.series[this.i][this.j];
-					this.soroban.assignstring(this.count);
-				}
+			var num = String(this.series[this.i][this.j]).replace(" ", "");
+			if(!isNaN(num) && this.j < this.series[this.i].length-1) {
+				this.count += Number(num);
+				this.soroban.reset();
+				this.soroban.assignstring(this.count);
 			}
 			var newUtt = new SpeechSynthesisUtterance();
 			newUtt.text = this.series[this.i][this.j]; 
@@ -358,7 +246,7 @@ AudioMath.prototype.run = function(j, i, tmp) {
 function Abacus(target, nm, nc, abtype, iv, imagep, upperBead, lowerBead, noBeadPic, middleRod) {
     this.target = target;
 	this.v029 = 0;
-    this.abacusname = nm;
+    this.abacusname = nm + ".soroban";
     this.v018 = nc;
     this.imagepath = imagep;
     if (abtype == "Soroban") {

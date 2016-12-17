@@ -1,20 +1,4 @@
-body {
-	overflow: hidden;
-	position: fixed;
-	margin: 0;
-	height: 100vh;
-}
-input:focus {
-	outline: 0;
-}
-#calculator {
-	position: absolute;
-    top: 50%;
-    left: 50%;
-    text-align: center;
-    transform: translate(-50%, -50%);
-}
-#calculator td img {
+td img {
     width: 23.6vh;
 }
 #dashboard {
@@ -22,16 +6,6 @@ input:focus {
 	width: 28vh;
 	bottom: 4vh;
 	left: 4vh;
-}
-.block {
-	display: block;
-}
-.range {
-	display: inline-block!important;
-	width: 25.5vh!important;
-}
-.range.min {
-	margin-right: 4vh;
 }
 input[type=range].slider {
 	width: 55vh!important;
@@ -98,9 +72,10 @@ label[for="nav-trigger"] {
 .nav-trigger + label, .site-wrap {
 	transition: left 0.2s;
 }
-.nav-item label {
+.nav-item label, .nav-item span.range-label {
 	color: #fff;
 	font-size: 5vh;
+	font-weight: 700;
 }
 .nav-item input, .nav-item select {
 	display: block;
@@ -134,7 +109,7 @@ label[for="nav-trigger"] {
 	.nav-trigger:checked ~ .site-wrap {
 		left: 31vh;
 	}
-	.nav-item label {
+	.nav-item label, .nav-item span.range-label {
 		font-size: 3vh;
 	}
 	.nav-item input, .nav-item select {

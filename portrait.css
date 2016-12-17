@@ -1,36 +1,10 @@
-body {
-	overflow: hidden;
-	position: fixed;
-	margin: 0;
-	height: 100vh;
-}
-input:focus {
-	outline: 0;
-}
-#calculator {
-	position: absolute;
-    top: 50%;
-    left: 50%;
-    text-align: center;
-    transform: translate(-50%, -50%);
-}
-#calculator td img {
+td img {
     width: 11.1vh;
 }
 #dashboard {
 	position: absolute;
 	bottom: 2vh;
 	left: 2vh;
-}
-.block {
-	display: block;
-}
-.range {
-	display: inline-block!important;
-	width: 13.5vh!important;
-}
-.range.min {
-	margin-right: 4vh;
 }
 input[type=range].slider {
 	width: 31vh!important;
@@ -97,9 +71,10 @@ label[for="nav-trigger"] {
 .nav-trigger + label, .site-wrap {
 	transition: left 0.2s;
 }
-.nav-item label {
+.nav-item label, .nav-item span.range-label {
 	color: #fff;
 	font-size: 3vh;
+	font-weight: 700;
 }
 .nav-item input, .nav-item select {
 	display: block;
