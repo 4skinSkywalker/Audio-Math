@@ -92,7 +92,7 @@ label[for="nav-trigger"] {
 	.range {
 		width: 9.5vh!important;
 	}
-	#calculator td img {
+	td img {
 		width: 12vh;
 	}
 	#dashboard {
