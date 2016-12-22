@@ -15,7 +15,7 @@ function AudioMath(name, optionsTrg, trainerTrg) {
 	this.operation		= "+";
 	this.voice			= 0;
 	this.series 		= [];
-	this.soroban 		= new Abacus(this.sorobanTrg, this.name, 5, "Soroban", 0, "soroban/", "upper-bead.png", "lower-bead.png", "no-bead.png", "middle-rod.png");
+	this.soroban 		= new Abacus(this.sorobanTrg, this.name, 5, "Soroban", 0, "soroban/", "upper-bead-on.png", "lower-bead-on.png", "upper-bead-off.png", "lower-bead-off.png", "no-bead.png", "middle-rod.png");
 }
 
 AudioMath.prototype.getOptionsHTML = function() {
@@ -243,7 +243,7 @@ AudioMath.prototype.run = function(j, i, tmp) {
 
 // START SOROBAN SCRIPT //
 //
-function Abacus(target, nm, nc, abtype, iv, imagep, upperBead, lowerBead, noBeadPic, middleRod) {
+function Abacus(target, nm, nc, abtype, iv, imagep, upperBeadOn, lowerBeadOn, upperBeadOff, lowerBeadOff, noBeadPic, middleRod) {
     this.target = target;
 	this.v029 = 0;
     this.abacusname = nm + ".soroban";
@@ -260,8 +260,10 @@ function Abacus(target, nm, nc, abtype, iv, imagep, upperBead, lowerBead, noBead
     }
     this.v022 = new Array();
     this.currentvalue = iv;
-	this.upperBeadPic = this.imagepath + upperBead;
-	this.lowerBeadPic = this.imagepath + lowerBead;
+	this.upperBeadOnPic = this.imagepath + upperBeadOn;
+	this.lowerBeadOnPic = this.imagepath + lowerBeadOn;
+	this.upperBeadOffPic = this.imagepath + upperBeadOff;
+	this.lowerBeadOffPic = this.imagepath + lowerBeadOff;
     this.v031 = this.imagepath + noBeadPic;
     this.v040 = this.imagepath + middleRod;
     this.assignstring = v045;
@@ -330,8 +332,10 @@ function v044() {
         for (v015 = 1; v015 < this.v017 + 2; v015++) {
             for (v016 = this.v018 - 1; v016 >= 0; --v016) {
                 v030 = "T" + v015 + "-" + v016 + "-" + this.abacusname;
-                if ((this.v017 - this.v022[v016].v020) != (v015 - 1)) {
-                    document.images[v030].src = this.upperBeadPic;
+                if ((this.v017 - this.v022[v016].v020) > (v015 - 1)) {
+                    document.images[v030].src = this.upperBeadOffPic;
+                } else if ((this.v017 - this.v022[v016].v020) < (v015 - 1)) {
+                    document.images[v030].src = this.upperBeadOnPic;
                 } else {
                     document.images[v030].src = this.v031;
                 }
@@ -340,8 +344,10 @@ function v044() {
         for (v015 = 1; v015 < this.v027 + 2; v015++) {
             for (v016 = this.v018 - 1; v016 >= 0; --v016) {
                 v030 = "B" + v015 + "-" + v016 + "-" + this.abacusname;
-                if (v015 != this.v022[v016].v019 + 1) {
-                    document.images[v030].src = this.lowerBeadPic;
+                if (v015 > this.v022[v016].v019 + 1) {
+                    document.images[v030].src = this.lowerBeadOffPic;
+                } else if (v015 < this.v022[v016].v019 + 1) {
+                    document.images[v030].src = this.lowerBeadOnPic;
                 } else {
                     document.images[v030].src = this.v031;
                 }
@@ -400,7 +406,7 @@ function v046(v022) {
         for (v016 = v021 - 1; v016 >= 0; --v016) {
             code += "<td>";
             if ((this.v017 - this.v022[v016].v020) != (v015 - 1)) {
-				code += "<img name='T" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.upperBeadPic + " onClick=" + this.abacusname + ".v039(this.name)>";
+				code += "<img name='T" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.upperBeadOffPic + " onClick=" + this.abacusname + ".v039(this.name)>";
 			} else {
 				code += "<img name='T" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.v031 + " onClick=" + this.abacusname + ".v039(this.name)>";
 			}
@@ -422,7 +428,7 @@ function v046(v022) {
                 code += "<img src=" + this.v040 + ">";
             } else {
                 if (v015 != this.v022[v016].v019 + 1) {
-                    code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.lowerBeadPic + " onClick=" + this.abacusname + ".v039(this.name)>";
+                    code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.lowerBeadOffPic + " onClick=" + this.abacusname + ".v039(this.name)>";
                 } else {
                     code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.v031 + " onClick=" + this.abacusname + ".v039(this.name)>";
                 }
