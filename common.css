@@ -4,6 +4,19 @@ body {
 	margin: 0;
 	height: 100vh;
 }
+body:after {
+	content: url("soroban/off/upper-bead-off.png")
+		url("soroban/off/lower-bead-off1.png")
+		url("soroban/off/lower-bead-off2.png")
+		url("soroban/off/lower-bead-off3.png")
+		url("soroban/off/lower-bead-off4.png")
+		url("soroban/on/upper-bead-on.png")
+		url("soroban/on/lower-bead-on1.png")
+		url("soroban/on/lower-bead-on2.png")
+		url("soroban/on/lower-bead-on3.png")
+		url("soroban/on/lower-bead-on4.png");
+	display: none;
+}
 input:focus {
 	outline: 0;
 }

@@ -153,22 +153,21 @@ AudioMath.prototype.init = function() {
 	}
 	
 	var imgs = [
-			"soroban/off/upper-bead-off.png",
-			"soroban/off/lower-bead-off1.png",
-			"soroban/off/lower-bead-off2.png",
-			"soroban/off/lower-bead-off3.png",
-			"soroban/off/lower-bead-off4.png",
-			"soroban/on/upper-bead-on.png",
-			"soroban/on/lower-bead-on1.png",
-			"soroban/on/lower-bead-on2.png",
-			"soroban/on/lower-bead-on3.png",
-			"soroban/on/lower-bead-on4.png"
-		],
-		preloaded = new Image();
+		"soroban/off/upper-bead-off.png",
+		"soroban/off/lower-bead-off1.png",
+		"soroban/off/lower-bead-off2.png",
+		"soroban/off/lower-bead-off3.png",
+		"soroban/off/lower-bead-off4.png",
+		"soroban/on/upper-bead-on.png",
+		"soroban/on/lower-bead-on1.png",
+		"soroban/on/lower-bead-on2.png",
+		"soroban/on/lower-bead-on3.png",
+		"soroban/on/lower-bead-on4.png"
+	];
 
-	$.each(imgs, function(i, c) {
-		preloaded.src = c; 
-		console.log("loaded image #" + i + ": " + c);
+	$.each(imgs, function(i, url) {
+		(new Image()).src = url; 
+		console.log("loaded image #" + i + ": " + url);
 	});
 
 	this.soroban.htmldraw();
