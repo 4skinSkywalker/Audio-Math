@@ -152,6 +152,28 @@ AudioMath.prototype.init = function() {
 		speechSynthesis.onvoiceschanged = populateVoiceList;
 	}
 	
+	var img0 = new Image(),
+		img1 = new Image(),
+		img2 = new Image(),
+		img3 = new Image(),
+		img4 = new Image(),
+		img5 = new Image(),
+		img6 = new Image(),
+		img7 = new Image(),
+		img8 = new Image(),
+		img9 = new Image();
+		
+	img0.src = 'soroban/off/upper-bead-off.png';
+	img1.src = 'soroban/off/lower-bead-off1.png';
+	img2.src = 'soroban/off/lower-bead-off2.png';
+	img3.src = 'soroban/off/lower-bead-off3.png';
+	img4.src = 'soroban/off/lower-bead-off4.png';
+	img5.src = 'soroban/on/upper-bead-on.png';
+	img6.src = 'soroban/on/lower-bead-on1.png';
+	img7.src = 'soroban/on/lower-bead-on2.png';
+	img8.src = 'soroban/on/lower-bead-on3.png';
+	img9.src = 'soroban/on/lower-bead-on4.png';
+	
 	this.soroban.htmldraw();
 };
 
