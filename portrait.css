@@ -7,7 +7,6 @@ td img {
 #status-bar * {
 	width: 100%;
 	font-size: 4vh;
-	text-align: center;
 }
 #text-of-calculation {
 	position: absolute;

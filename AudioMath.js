@@ -55,6 +55,9 @@ function populateOptionsHTML() {
 		}
 		s = "";
 	}
+	s += '<li class="nav-item">';
+	s += 	'<p>Press the play button and listen to the calculations while watching the Soroban</p>';
+	s += '</li>';
 	$("." + optionsTrg).append(s);
 }
 
@@ -144,11 +147,11 @@ function generateArray() {
 		calculation += first;
 		for(var j = 1; j < engine.numbers["value"]; j++) {
 			rndBool = Math.round(Math.random()) & 1;
-			sign = (enable && rndBool == 1)? "-": "+",
+			sign = (enable && rndBool == 1)? " -": " +  ",
 			signs.push(sign);
 			next = randomNumber(enable, sign, numbers[j-1]);
 			numbers.push(next);
-			calculation += " " + signs[j] + next;
+			calculation += signs[j] + next;
 		}
 		
 		var result = eval(calculation),
@@ -259,7 +262,7 @@ function run(j, i, tmp) {
 		}
 		if(i < series.length) {
 			if(j == 0)
-				$("#text-of-calculation").text(series[i][0]);
+				$("#text-of-calculation").text(series[i][0].replace(/\s\s+/g,""));
 			
 			var num = String(series[i][j]).replace(" ", "");
 			if(!isNaN(num) && j < series[i].length-1) {

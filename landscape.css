@@ -4,11 +4,11 @@ td img {
 #status-bar * {
 	position: absolute;
     top: 4vh;
-	width: 7vh;
+	width: 14vh;
     font-size: 7vh;
 }
 #text-of-calculation {
-    right: 16vh;
+    right: 4vh;
 }
 #engine-button {
 	bottom: 4vh;
