@@ -11,7 +11,7 @@ var optionsTrg 		= "navigation",
 
 engine.calculations = { "type":"range", "target":"calculations", "text":"Calculations:", "value":50, "min":10, "step":10, "MAX":500};
 engine.numbers 		= { "type":"range", "target":"numbers", "text":"Numbers:", "value":5, "min":2, "step":1, "MAX":10};
-engine.digits 		= { "type":"range", "target":"digits", "text":"Digits:", "value":1, "min":1, "step":1, "MAX":3};
+engine.digits 		= { "type":"range", "target":"digits", "text":"Digits:", "value":1, "min":1, "step":1, "MAX":2};
 engine.rate 		= { "type":"range", "target":"speech-rate", "text":"Speech Rate:", "value":1.0, "min":0.1, "step":0.1, "MAX":5};
 engine.voice		= { "type":"selector", "target":"voices", "text":"Speech Voice:", "value":0, "selection": []};
 engine.operation	= { "type":"selector", "target":"operation", "text":"Operation:", "value":"+",
