@@ -14,10 +14,10 @@ engine.numbers 		= { "type":"range", "target":"numbers", "text":"Numbers:", "val
 engine.digits 		= { "type":"range", "target":"digits", "text":"Digits:", "value":1, "min":1, "step":1, "MAX":2};
 engine.rate 		= { "type":"range", "target":"speech-rate", "text":"Speech Rate:", "value":1.0, "min":0.1, "step":0.1, "MAX":5};
 engine.voice		= { "type":"selector", "target":"voices", "text":"Speech Voice:", "value":0, "selection": []};
-engine.operation	= { "type":"selector", "target":"operation", "text":"Operation:", "value":"+",
+engine.operation	= { "type":"selector", "target":"operation", "text":"Operation:", "value":"+/-",
 						"selection": [
-							"+",
-							"-"
+							"+/-",
+							"+"
 						]};
 						
 function getLayoutHTML() {
@@ -106,12 +106,12 @@ function functionizer(e, f, t) {
 	$(e).text(t);
 }
 
-function randomNumber(both, sign, partial) {
+function randomNumber(both, bool, partial) {
 	
 	var lower = Math.pow(10, engine.digits["value"] - 1); 
 	
-	if(both && sign && (partial - lower) > lower)
-		return Math.floor(Math.random() * clamp(partial - lower) + lower);
+	if(both && bool && (partial - lower) > lower)
+		return -Math.floor(Math.random() * clamp(partial - lower) + lower);
 	else
 		return Math.floor(Math.random() * 9 * Math.pow(10, engine.digits["value"] - 1) + lower);
 }
@@ -123,7 +123,7 @@ function clamp(number) {
 	if(number >= MAX) {
 		return ((MAX - 1) - min);
 	} else if(number <= min) {
-		return min;
+		return (min + 1);
 	} else {
 		return number;
 	}
@@ -133,29 +133,38 @@ function generateArray() {
 	
 	series = [];
 	
+	var procedure = [],
+		calculation = "",
+		signs = [],
+		numbers = [],
+		subtraction = false,
+		first = 0,
+		next = 0,
+		count = 0;
+	
 	for(var i = 0; i < engine.calculations["value"]; i++) {
-		var procedure = [],
-			calculation = "";
-			numbers = [],
-			signs = ["+"],
-			enable = (engine.operation["value"] == "-")? true : false;
+		procedure = [];
+		calculation = "";
+		signs = ["dummy"];
+		numbers = [];
+		subtraction = (engine.operation["value"] == "+/-") ? true : false;
 		
-		var first = randomNumber(enable, 0, 0),
-			next = 0;
+		first = randomNumber(0, 0, 0);
+		next = 0;
+		count = 0;
 		
 		numbers.push(first);
 		calculation += first;
+		count += first;
 		for(var j = 1; j < engine.numbers["value"]; j++) {
 			rndBool = Math.round(Math.random()) & 1;
-			sign = (enable && rndBool == 1)? " -": " +  ",
+			next = randomNumber(subtraction, rndBool, count);
+			count += next;
+			sign = (next < 0) ? " -": " +  ",
 			signs.push(sign);
-			next = randomNumber(enable, sign, numbers[j-1]);
-			numbers.push(next);
-			calculation += signs[j] + next;
+			numbers.push(Math.abs(next));
+			calculation += sign + Math.abs(next);
 		}
-		
-		var result = eval(calculation),
-			broken = [];
 		
 		procedure.push(calculation);
 		procedure.push(" = ");
@@ -173,7 +182,7 @@ function generateArray() {
 			})(numbers[k]);
 		}	
 		procedure.push(" = ");	
-		procedure.push(result);
+		procedure.push(count);
 		series.push(procedure);
 	}
 	return series;
@@ -262,9 +271,9 @@ function run(j, i, tmp) {
 		}
 		if(i < series.length) {
 			if(j == 0)
-				$("#text-of-calculation").text(series[i][0].replace(/\s\s+/g,""));
+				$("#text-of-calculation").text(series[i][0].replace(/\s{2,}/g,""));
 			
-			var num = String(series[i][j]).replace(" ", "");
+			var num = String(series[i][j]).replace(/\s{1,}/g, "");
 			if(!isNaN(num) && j < series[i].length-1) {
 				count += Number(num);
 				soroban.reset();
