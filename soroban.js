@@ -163,9 +163,9 @@ function v046(v022) {
         for (v016 = v021 - 1; v016 >= 0; --v016) {
             code += "<td>";
             if ((this.v017 - this.v022[v016].v020) != (v015 - 1)) {
-				code += "<img name='T" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.upperBeadOffPic + ">";//  onClick=" + this.abacusname + ".v039(this.name)
+				code += "<img name='T" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.upperBeadOffPic + " onClick=" + this.abacusname + ".v039(this.name)>";
 			} else {
-				code += "<img name='T" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.v031 + ">";// onClick=" + this.abacusname + ".v039(this.name)
+				code += "<img name='T" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.v031 + " onClick=" + this.abacusname + ".v039(this.name)>";
 			}
             code += "</td>";
         }
@@ -185,9 +185,9 @@ function v046(v022) {
                 code += "<img src=" + this.v040 + ">";
             } else {
                 if (v015 != this.v022[v016].v019 + 1) {
-                    code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src='" + this.lowerBeadOffPic + (v015-1) + ".png'>";// onClick=" + this.abacusname + ".v039(this.name)
+                    code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src='" + this.lowerBeadOffPic + (v015-1) + ".png' onClick=" + this.abacusname + ".v039(this.name)>";
                 } else {
-                    code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.v031 + ">";// onClick=" + this.abacusname + ".v039(this.name)
+                    code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.v031 + " onClick=" + this.abacusname + ".v039(this.name)>"; 
                 }
             }
             code += "</td>";
