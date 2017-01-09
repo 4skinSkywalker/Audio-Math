@@ -267,6 +267,8 @@ function stop() {
 	var interval = setInterval(function() {
 		if(Number(soroban.currentvaluestring) <= 0) {
 			clearInterval(interval);
+			console.log("Abacus reset accomplished!");
+		} else {
 			soroban.reset();
 		}
 	}, 10);
