@@ -3,7 +3,7 @@
 function Abacus(target, nm, nc, abtype, iv, imagep) {
     this.target = target;
 	this.v029 = 0;
-    this.abacusname = nm + ".soroban";
+    this.abacusname = nm;
     this.v018 = nc;
     this.imagepath = imagep;
     if (abtype == "Soroban") {
