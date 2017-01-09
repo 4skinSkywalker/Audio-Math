@@ -205,7 +205,7 @@ function markupInitializer() {
 
 	functionizer("#" + engine.btnTrg, "start()", engine.playSymbol);
 	
-	soroban = new Abacus(engine.sorobanTrg, "soroban", 5, "Soroban", 0, "img/");
+	soroban = new Abacus(engine.sorobanTrg, "soroban", 3, "Soroban", 0, "img/");
 	var imgs = [
 		"img/off/upper-bead-off.png",
 		"img/off/lower-bead-off1.png",

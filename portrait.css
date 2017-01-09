@@ -1,16 +1,12 @@
 td img {
-    width: 11.1vh;
-}
-#status-bar {
-	padding-top: 2vh;
-}
-#status-bar * {
-	width: 100%;
-	font-size: 4vh;
+    width: 15vh;
 }
 #text-of-calculation {
-	position: absolute;
-    bottom: 2vh;
+    width: 75%;
+	bottom: 2vh;
+    left: 50%;
+    transform: translateX(-50%);
+	font-size: 4vh;
 }
 #engine-button {
 	top: 2vh;

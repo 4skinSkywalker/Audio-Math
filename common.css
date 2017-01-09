@@ -16,6 +16,7 @@ body:after {
 	display: none;
 }
 #status-bar * {
+	position: absolute;
 	color: #888;
 	word-wrap:break-word;
 	text-align: center;

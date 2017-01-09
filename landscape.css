@@ -1,14 +1,11 @@
 td img {
-    width: 23.6vh;
-}
-#status-bar * {
-	position: absolute;
-    top: 4vh;
-	width: 14vh;
-    font-size: 7vh;
+    width: 23vh;
 }
 #text-of-calculation {
+	width: 14vh;
+	top: 4vh;
     right: 4vh;
+    font-size: 7vh;
 }
 #engine-button {
 	bottom: 4vh;
