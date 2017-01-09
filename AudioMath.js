@@ -1,19 +1,22 @@
-var optionsTrg 		= "navigation",
-	trainerTrg		= "site-wrap",
-	sorobanTrg		= "soroban",
-	resultsTrg		= "results",
-	playStopTrg		= "engine-button",
-	playChar		= "Play",
-	stopChar		= "Stop",
-	running			= false,
-	series 			= [],
-	engine 			= {};
+var engine 			= {};
+
+engine.optionsTrg 	= "navigation";
+engine.trainerTrg	= "site-wrap";
+engine.sorobanTrg	= "soroban";
+engine.btnTrg		= "engine-button";
+engine.playSymbol	= "Play";
+engine.stopSymbol	= "Stop";
+	
+engine.running		= false;
+engine.series 		= [];
+engine.strings		= [];
 
 engine.calculations = { "type":"range", "target":"calculations", "text":"Calculations:", "value":50, "min":10, "step":10, "MAX":500};
 engine.numbers 		= { "type":"range", "target":"numbers", "text":"Numbers:", "value":5, "min":2, "step":1, "MAX":10};
 engine.digits 		= { "type":"range", "target":"digits", "text":"Digits:", "value":1, "min":1, "step":1, "MAX":2};
-engine.rate 		= { "type":"range", "target":"speech-rate", "text":"Speech Rate:", "value":1.0, "min":0.1, "step":0.1, "MAX":5};
-engine.voice		= { "type":"selector", "target":"voices", "text":"Speech Voice:", "value":0, "selection": []};
+engine.delay 		= { "type":"range", "target":"abacus-delay", "text":"Abacus Delay:", "value":750, "min":50, "step":50, "MAX":1000, "char":"%", "change":function(x) {return x/10}};
+engine.rate 		= { "type":"range", "target":"speech-rate", "text":"Speech Rate:", "value":1.0, "min":1, "step":0.1, "MAX":2, "char":"%", "change":function(x) {return Math.round(x*100)}};
+engine.voice		= { "type":"selector", "target":"speech-voices", "text":"Speech Voice:", "value":0, "selection": []};
 engine.operation	= { "type":"selector", "target":"operation", "text":"Operation:", "value":"+/-",
 						"selection": [
 							"+/-",
@@ -22,10 +25,10 @@ engine.operation	= { "type":"selector", "target":"operation", "text":"Operation:
 						
 function getLayoutHTML() {
 	var s = "";
-	s += '<ul class="' + optionsTrg + '"></ul>';
+	s += '<ul class="' + engine.optionsTrg + '"></ul>';
 	s += '<input type="checkbox" id="nav-trigger" class="nav-trigger"/>';
 	s += '<label for="nav-trigger"></label>';
-	s += '<div class="' + trainerTrg + '"></div>';
+	s += '<div class="' + engine.trainerTrg + '"></div>';
 	return s;
 }
 
@@ -34,31 +37,33 @@ function populateOptionsHTML() {
 		obj = engine;
 	for(var key in obj) {
 		if(obj.hasOwnProperty(key)) {
-			if(obj[key]["type"] == "range") {
-				var ch = (obj[key]["char"]) ? obj[key]["char"] : "";
-					txt = (obj[key]["change"]) ? obj[key]["change"](obj[key]["value"]) + ch : obj[key]["value"] + ch;
-				s += '<li class="nav-item">';
-				s += 	'<span class="range-label">' + obj[key]["text"] + ' </span><span id="' + obj[key]["target"] + '-span" class="range-label">' + txt+'</span>';
-				s +=	'<input type="range" class="slider" id="' + obj[key]["target"] + '" min="' + obj[key]["min"] + '" max="' + obj[key]["MAX"] + '" step="' + obj[key]["step"] + '" value="' + obj[key]["value"] + '">';
-				s += '</li>';
-			} else if(obj[key]["type"] == "selector") {
-				s += '<li class="nav-item">';
-				s += 	'<label for="' + obj[key]["target"] + '">' + obj[key]["text"] + '</label>';
-				s +=	'<select class="option" id="' + obj[key]["target"] + '">';
-				for(var i = 0; i < obj[key]["selection"].length; i++)
-					s +=	'<option>' + obj[key]["selection"][i] + '</option>';
-				s +=	'</select>';
-				s += '</li>';
+			if(obj[key]["type"] == "range" || obj[key]["type"] == "selector") {
+				if(obj[key]["type"] == "range") {
+					var ch = (obj[key]["char"]) ? obj[key]["char"] : "";
+						txt = (obj[key]["change"]) ? obj[key]["change"](obj[key]["value"]) + ch : obj[key]["value"] + ch;
+					s += '<li class="nav-item">';
+					s += 	'<span class="range-label">' + obj[key]["text"] + ' </span><span id="' + obj[key]["target"] + '-span" class="range-label">' + txt+'</span>';
+					s +=	'<input type="range" class="slider" id="' + obj[key]["target"] + '" min="' + obj[key]["min"] + '" max="' + obj[key]["MAX"] + '" step="' + obj[key]["step"] + '" value="' + obj[key]["value"] + '">';
+					s += '</li>';
+				} else if(obj[key]["type"] == "selector") {
+					s += '<li class="nav-item">';
+					s += 	'<label for="' + obj[key]["target"] + '">' + obj[key]["text"] + '</label>';
+					s +=	'<select class="option" id="' + obj[key]["target"] + '">';
+					for(var i = 0; i < obj[key]["selection"].length; i++)
+						s +=	'<option>' + obj[key]["selection"][i] + '</option>';
+					s +=	'</select>';
+					s += '</li>';
+				}
+				$("." + engine.optionsTrg).append(s);
+				onSettingChange(obj, key);
 			}
-			$("." + optionsTrg).append(s);
-			onSettingChange(obj, key);
 		}
 		s = "";
 	}
 	s += '<li class="nav-item">';
 	s += 	'<p>Press the play button and listen to the calculations while watching the Soroban</p>';
 	s += '</li>';
-	$("." + optionsTrg).append(s);
+	$("." + engine.optionsTrg).append(s);
 }
 
 function onSettingChange(obj, key) {
@@ -96,9 +101,9 @@ function populateTrainerHTML() {
 	s += '<div id="status-bar">';
 	s += 	'<div id="text-of-calculation"></div>';
 	s += '</div>';
-	s += '<button id="' + playStopTrg + '" class="btn-standard"></button>';
-	s += '<div id="' + sorobanTrg + '"></div>';
-    $("." + trainerTrg).append(s);
+	s += '<button id="' + engine.btnTrg + '" class="btn-standard"></button>';
+	s += '<div id="' + engine.sorobanTrg + '"></div>';
+    $("." + engine.trainerTrg).append(s);
 }
 
 function functionizer(e, f, t) {
@@ -131,45 +136,46 @@ function clamp(number) {
 
 function generateArray() {
 	
-	series = [];
+	engine.series = [];
+	engine.strings = [];
 	
-	var procedure = [],
-		calculation = "",
-		signs = [],
+	var procedures = [],
 		numbers = [],
-		subtraction = false,
+		sub = false,
+		signs = [],
 		first = 0,
 		next = 0,
+		string = "",
 		count = 0;
 	
 	for(var i = 0; i < engine.calculations["value"]; i++) {
-		procedure = [];
-		calculation = "";
-		signs = ["dummy"];
+		procedures = [];
 		numbers = [];
-		subtraction = (engine.operation["value"] == "+/-") ? true : false;
 		
+		sub = (engine.operation["value"] == "+/-") ? true : false;
+		signs = [];
 		first = randomNumber(0, 0, 0);
 		next = 0;
+		string = "";
 		count = 0;
 		
-		numbers.push(first);
-		calculation += first;
 		count += first;
+		string += String(first);
+		
+		numbers.push(first);
+		procedures.push(first);
+		
 		for(var j = 1; j < engine.numbers["value"]; j++) {
 			rndBool = Math.round(Math.random()) & 1;
-			next = randomNumber(subtraction, rndBool, count);
+			next = randomNumber(sub, rndBool, count);
 			count += next;
+			
 			sign = (next < 0) ? " -": " +  ",
 			signs.push(sign);
+			string += sign + Math.abs(next);
+			
 			numbers.push(Math.abs(next));
-			calculation += sign + Math.abs(next);
-		}
-		
-		procedure.push(calculation);
-		procedure.push(" = ");
-		procedure.push(first);
-		for(var k = 1; k < numbers.length; k++) {
+			
 			(function breakDown(num) {
 				if(num<=0) return false;
 				num = num.toFixed(0);
@@ -177,15 +183,18 @@ function generateArray() {
 				var divisor = Math.pow(10, num.length-1),
 					quotient = Math.floor(num/divisor);
 
-				procedure.push(signs[k] + divisor*quotient);
+				procedures.push(signs[j-1] + divisor*quotient);
 				breakDown(num % divisor);
-			})(numbers[k]);
-		}	
-		procedure.push(" = ");	
-		procedure.push(count);
-		series.push(procedure);
+			})(numbers[j]);
+		}
+		
+		procedures.push(" = ");	
+		procedures.push(count);
+		engine.series.push(procedures);
+		
+		engine.strings.push(string);
 	}
-	return series;
+	return engine.series;
 }
 
 function markupInitializer() {
@@ -194,9 +203,9 @@ function markupInitializer() {
 	populateTrainerHTML();
 	populateOptionsHTML();
 
-	functionizer("#" + playStopTrg, "start()", playChar);
+	functionizer("#" + engine.btnTrg, "start()", engine.playSymbol);
 	
-	soroban = new Abacus(sorobanTrg, "soroban", 5, "Soroban", 0, "img/");
+	soroban = new Abacus(engine.sorobanTrg, "soroban", 5, "Soroban", 0, "img/");
 	var imgs = [
 		"img/off/upper-bead-off.png",
 		"img/off/lower-bead-off1.png",
@@ -217,6 +226,7 @@ function markupInitializer() {
 }
 
 function eventsInitializer() {
+	
 	speechSynthesis.cancel();
 	
 	function populateVoiceList() {
@@ -239,21 +249,29 @@ function eventsInitializer() {
 
 function start() {
 	
-	running = true;
+	engine.running = true;
 
-	functionizer("#" + playStopTrg, "stop()", stopChar);
+	functionizer("#" + engine.btnTrg, "stop()", engine.stopSymbol);
 
 	generateArray();
 	run();
 }
 
 function stop() {
-
-	speechSynthesis.cancel();
-	soroban.reset();
-	running = false;
 	
-	functionizer("#" + playStopTrg, "start()", playChar);
+	engine.running = false;
+	clearTimeout(engine.playing);
+	
+	speechSynthesis.cancel();
+	$("#text-of-calculation").text("");
+	var interval = setInterval(function() {
+		if(Number(soroban.currentvaluestring) <= 0)
+			clearInterval(interval);
+		else
+			soroban.reset();
+	}, 10);
+	
+	functionizer("#" + engine.btnTrg, "start()", engine.playSymbol);
 }
 
 function run(j, i, tmp) {
@@ -262,31 +280,32 @@ function run(j, i, tmp) {
 	i = (i == undefined) ? 0 : i;
 	count = tmp || 0;	
 	
-	if(running) {
-		if(j > series[i].length-1) {
+	var newUtt = new SpeechSynthesisUtterance(); 
+	newUtt.voice = engine.voice["selection"][engine.voice["value"]]; 
+	newUtt.rate = engine.rate["value"];
+	newUtt.onend = function() {run(j+1, i, count)};
+			
+	if(engine.running) {
+		if(j >= engine.series[i].length) {
 			j = 0;
 			i++;
 			count = 0;
 			soroban.reset();
 		}
-		if(i < series.length) {
+		if(i < engine.series.length) {
 			if(j == 0)
-				$("#text-of-calculation").text(series[i][0].replace(/\s{2,}/g,""));
+				$("#text-of-calculation").text(engine.strings[i].replace(/\s{2,}/g,""));
 			
-			var num = String(series[i][j]).replace(/\s{1,}/g, "");
-			if(!isNaN(num) && j < series[i].length-1) {
+			var num = String(engine.series[i][j]).replace(/\s{1,}/g, "");
+			if(!isNaN(num) && j < engine.series[i].length - 1) {
 				count += Number(num);
-				soroban.reset();
-				soroban.assignstring(count);
+				engine.playing = setTimeout(function() {
+					soroban.reset();
+					soroban.assignstring(count);
+				}, engine.delay["value"]*(engine.rate["MAX"] - engine.rate["value"]));
 			}
-
-			var newUtt = new SpeechSynthesisUtterance(),
-				sel = engine.voice["value"];
-			newUtt.text = series[i][j]; 
-			newUtt.voice = engine.voice["selection"][sel]; 
-			newUtt.rate = engine.rate["value"];
-			newUtt.onend = function() {run(j+1, i, count)};
 			console.log(newUtt);
+			newUtt.text = engine.series[i][j];
 			speechSynthesis.speak(newUtt);
 		} else {
 			stop();
