@@ -72,11 +72,8 @@ function onSettingChange(obj, key) {
 	if(obj[key]["type"] == "range") {
 		onChangeAttacher(el, function() {
 			obj[key]["value"] = Number($("#" + obj[key]["target"]).val());
+			$("#" + obj[key]["target"] + "-span").text(obj[key]["value"]);
 		});
-		if($("#" + obj[key]["target"] + "-span"))
-			onChangeAttacher(el, function() {
-				$("#" + obj[key]["target"] + "-span").text(obj[key]["value"]);
-			});
 	} else if(obj[key]["type"] == "selector") {
 		onChangeAttacher(el, function() {
 			obj[key]["value"] = $("#" + obj[key]["target"]).val();
@@ -283,7 +280,7 @@ function run(j, i, tmp) {
 	count = tmp || 0;	
 	
 	var newUtt = new SpeechSynthesisUtterance(); 
-	newUtt.voice = engine.voice["selection"][engine.voice["value"]]; 
+	newUtt.voice = engine.voice["selection"][$("#" + engine.voice["target"]).find(':selected').data('index')]; 
 	newUtt.rate = engine.rate["value"];
 	newUtt.onend = function() {run(j+1, i, count)};
 			
