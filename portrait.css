@@ -1,9 +1,9 @@
 td img {
-    width: 15vh;
+    width: 18.7vh;
 }
 #text-of-calculation {
     width: 75%;
-	bottom: 2vh;
+	bottom: 1vh;
     left: 50%;
     transform: translateX(-50%);
 	font-size: 4vh;
