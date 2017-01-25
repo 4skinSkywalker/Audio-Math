@@ -14,7 +14,7 @@ engine.strings		= [];
 engine.calculations = { "type":"range", "target":"calculations", "text":"Calculations:", "value":50, "min":10, "step":10, "MAX":500};
 engine.numbers 		= { "type":"range", "target":"numbers", "text":"Numbers:", "value":5, "min":2, "step":1, "MAX":10};
 engine.digits 		= { "type":"range", "target":"digits", "text":"Digits:", "value":1, "min":1, "step":1, "MAX":2};
-engine.delay 		= { "type":"range", "target":"abacus-delay", "text":"Delay:", "value":250, "min":0, "step":50, "MAX":500, "char":"ms"};
+engine.solve 		= { "type":"range", "target":"animation", "text":"Animation:", "value":1, "min":0, "step":1, "MAX":1, "change": function(x) {return ( x === 1 ) ? "on" : "off"}};
 engine.rate 		= { "type":"range", "target":"speech-rate", "text":"Rate:", "value":1.0, "min":0.5, "step":0.1, "MAX":2, "char":"%", "change":function(x) {return Math.round(x*100)}};
 engine.voice		= { "type":"selector", "target":"speech-voices", "text":"Voice:", "value":0, "selection": []};
 engine.operation	= { "type":"selector", "target":"operation", "text":"Operation:", "value":"+/-",
@@ -279,11 +279,6 @@ function run(j, i, tmp) {
 	i = (i == undefined) ? 0 : i;
 	count = tmp || 0;	
 	
-	var newUtt = new SpeechSynthesisUtterance(); 
-	newUtt.voice = engine.voice["selection"][$("#" + engine.voice["target"]).find(':selected').data('index')]; 
-	newUtt.rate = engine.rate["value"];
-	newUtt.onend = function() {run(j+1, i, count)};
-			
 	if(engine.running) {
 		if(j >= engine.series[i].length) {
 			j = 0;
@@ -292,20 +287,28 @@ function run(j, i, tmp) {
 			soroban.reset();
 		}
 		if(i < engine.series.length) {
-			if(j == 0)
+			if(j == 0) {
 				$("#text-of-calculation").text(engine.strings[i].replace(/\s{2,}/g,""));
-			
-			var num = String(engine.series[i][j]).replace(/\s{1,}/g, "");
-			if(!isNaN(num) && j < engine.series[i].length - 1) {
-				count += Number(num);
-				engine.playing = setTimeout(function() {
-					soroban.reset();
-					soroban.assignstring(count);
-				}, engine.delay["value"]*(engine.rate["MAX"] - engine.rate["value"]));
 			}
+			
+			if ( engine.solve.value === 1 ) {
+				var num = String(engine.series[i][j]).replace(/\s{1,}/g, "");
+				if(!isNaN(num) && j < engine.series[i].length - 1) {
+					count += Number(num);
+					engine.playing = setTimeout(function() {
+						soroban.reset();
+						soroban.assignstring(count);
+					}, 400);
+				}
+			}
+			
+			this.newUtt = new SpeechSynthesisUtterance();
+			this.newUtt.voice = engine.voice["selection"][$("#" + engine.voice["target"]).find(':selected').data('index')];
+			this.newUtt.rate = engine.rate["value"];
+			this.newUtt.onend = function() {run(j+1, i, count)};
+			this.newUtt.text = engine.series[i][j];
+			speechSynthesis.speak(this.newUtt);
 			console.log(newUtt);
-			newUtt.text = engine.series[i][j];
-			speechSynthesis.speak(newUtt);
 		} else {
 			stop();
 		}
