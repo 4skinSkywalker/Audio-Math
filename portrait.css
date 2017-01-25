@@ -2,7 +2,7 @@ td img {
     width: 18.7vh;
 }
 #text-of-calculation {
-    width: 75%;
+    width: 100vw;
 	bottom: 1vh;
     left: 50%;
     transform: translateX(-50%);
