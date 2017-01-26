@@ -103,6 +103,9 @@ Engine.prototype.getLayoutHTML = function () {
 };
 Engine.prototype.populateNavigation = function () {
     var s = "";
+	s += "<li class=\"nav-item\">";
+    s += "<p id=\"title\">Audio Math</p>";
+    s += "</li>";
     $("#navigation").append(s);
     for (var key in this) {
         if (this.hasOwnProperty(key)) {
