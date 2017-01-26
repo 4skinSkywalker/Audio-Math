@@ -62,7 +62,7 @@ function Engine(name) {
         MAX: 2,
         "char": "%",
         "change": function (x) {
-            return Math.round(x * 100)
+            return Math.round(x * 100);
         }
     };
     this.delay = {
@@ -73,7 +73,10 @@ function Engine(name) {
         min: 0,
         step: 100,
         MAX: 1000,
-        "char": "ms"
+        "char": "s",
+        "change": function (x) {
+            return x/1000;
+        }
     };
     this.voice = {
         type: "selector",
