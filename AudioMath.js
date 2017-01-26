@@ -75,7 +75,7 @@ function Engine(name) {
         MAX: 1000,
         "char": "s",
         "change": function (x) {
-            return x/1000;
+            return String(x/1000).replace("0.", ".");;
         }
     };
     this.voice = {
@@ -259,7 +259,7 @@ Engine.prototype.eventsInit = function () {
             if (!$("#" + that.voice.target).val()) {
                 that.voice.selection = speechSynthesis.getVoices();
                 $.each(that.voice.selection, function (index, value) {
-                    $("#" + that.voice.target).append("<option data-index=" + index + ">" + value.name.replace(/Google/g, "") + "</option>");
+                    $("#" + that.voice.target).append("<option data-index=" + index + ">" + value.name.replace(/Google/g, "").trim().toUpperCase() + "</option>");
                 });
             }
             if (that.voice.selection.length != 0) {
