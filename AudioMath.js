@@ -40,7 +40,7 @@ function Engine(name) {
             return (x === 1) ? "on" : "off";
         }
     };
-	this.calculationText = {
+    this.calculationText = {
         type: "range",
         target: "calculation-text",
         text: "Text:",
@@ -75,7 +75,7 @@ function Engine(name) {
         MAX: 1000,
         "char": "s",
         "change": function (x) {
-            return String(x/1000).replace("0.", ".");;
+            return String(x / 1000).replace("0.", ".");;
         }
     };
     this.voice = {
@@ -106,7 +106,7 @@ Engine.prototype.getLayoutHTML = function () {
 };
 Engine.prototype.populateNavigation = function () {
     var s = "";
-	s += "<li class=\"nav-item\">";
+    s += "<li class=\"nav-item\">";
     s += "<p id=\"title\">Audio Math</p>";
     s += "</li>";
     $("#navigation").append(s);
@@ -250,10 +250,8 @@ Engine.prototype.markupInit = function () {
 };
 Engine.prototype.eventsInit = function () {
     var that = this;
-    speechSynthesis.cancel();
     this.soroban = new Abacus("soroban-div", this.name + ".soroban", 3, "Soroban", 0, "img/");
     this.soroban.htmldraw();
-    this.mainReset();
     (function populateVoiceList() {
         var retry = setInterval(function () {
             if (!$("#" + that.voice.target).val()) {
@@ -268,36 +266,65 @@ Engine.prototype.eventsInit = function () {
             }
         }, 10);
     })();
+    this.mainReset();
 };
 Engine.prototype.mainReset = function () {
     var that = this;
     this.running = false;
     speechSynthesis.cancel();
-    this.clearingInterval = setInterval(function () {
-        if (Number(that.soroban.currentvaluestring) <= 0 || that.soroban.currentvaluestring === undefined) {
-            clearInterval(that.clearingInterval);
-            console.log("soroban cleared");
-        } else {
-            that.soroban.reset();
-        }
-    }, 10);
     for (var i = 0; i < this.timeouts.length; i++) {
         clearTimeout(this.timeouts[i]);
         console.log("cleared timeout #" + this.timeouts[i]);
     }
+    that.soroban.reset();
     $("#text-of-calculation").text("");
+	console.log("soroban and text cleared");
 };
 Engine.prototype.start = function () {
     var that = this;
     this.running = true;
-    setTimeout(function () {
+    this.timeouts.push(setTimeout(function () {
         that.run.call(that, that.generateArray.call(that));
-    }, 100);
+    }, 500));
     this.functionizer("#engine-button", this.name + ".stop()", "Stop");
 };
 Engine.prototype.stop = function () {
     this.mainReset();
     this.functionizer("#engine-button", this.name + ".start()", "Play");
+};
+Engine.prototype.numerizeSoroban = function (array, count) {
+    var that = this;
+    if (that.animation.value === 1) {
+        var num = String(array[0][0]).replace(/\s{1,}/g, "");
+        if (!isNaN(num) && array[0].length > 1) {
+            count += Number(num);
+            that.soroban.reset();
+            that.soroban.assignstring(count);
+        }
+    }
+    array[0].shift();
+    that.run(array, count);
+};
+Engine.prototype.speak = function (array, count) {
+    var that = this;
+    this.newUtt = new SpeechSynthesisUtterance();
+    this.newUtt.voice = this.voice.selection[$("#" + this.voice.target).find(":selected").data("index")];
+    this.newUtt.rate = this.rate.value;
+    this.newUtt.text = array[0][0];
+    if (this.calculationText.value === 1) {
+        $("#text-of-calculation").text(array[0].join("").replace(/\s{2,}/g, ""));
+    }
+    this.newUtt.onend = function () {
+		if (that.running) {
+			that.timeouts.push(setTimeout(function () {
+				that.numerizeSoroban(array, count);
+			}, that.delay.value));
+		} else {
+			return false;
+		}
+    };
+    speechSynthesis.speak(this.newUtt);
+    console.log(this.newUtt);
 };
 Engine.prototype.run = function (array, tmp) {
     var that = this;
@@ -309,31 +336,11 @@ Engine.prototype.run = function (array, tmp) {
             this.soroban.reset();
         }
         if (array.length > 0) {
-            if (this.animation.value === 1) {
-                var num = String(array[0][0]).replace(/\s{1,}/g, "");
-                if (!isNaN(num) && array[0].length > 1) {
-                    count += Number(num);
-                    this.soroban.reset();
-                    this.soroban.assignstring(count);
-                }
-            }
-            this.newUtt = new SpeechSynthesisUtterance();
-            this.newUtt.voice = this.voice.selection[$("#" + this.voice.target).find(":selected").data("index")];
-            this.newUtt.rate = this.rate.value;
-            this.newUtt.text = array[0][0];
-			if (this.calculationText.value === 1) {
-				$("#text-of-calculation").text(array[0].join("").replace(/\s{2,}/g, ""));
-			}
-            array[0].shift();
-            this.newUtt.onend = function () {
-                that.timeouts.push(setTimeout(function () {
-                    that.run(array, count);
-                }, that.delay.value));
-            };
-            speechSynthesis.speak(this.newUtt);
-            console.log(this.newUtt);
+            that.speak(array, count);
         } else {
             this.stop();
         }
-    }
+    } else {
+		return false;
+	}
 };
