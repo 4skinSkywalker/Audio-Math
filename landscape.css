@@ -60,7 +60,7 @@ input[type=range].slider::-webkit-slider-thumb {
 }
 @media (min-width:961px) {
 	td img {
-		width: 12vh;
+		width: 24.33333vh;
 	}
 	.btn-standard:hover {
 		color: #000;
