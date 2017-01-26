@@ -40,6 +40,18 @@ function Engine(name) {
             return (x === 1) ? "on" : "off";
         }
     };
+	this.calculationText = {
+        type: "range",
+        target: "calculation-text",
+        text: "Text:",
+        value: 1,
+        min: 0,
+        step: 1,
+        MAX: 1,
+        "change": function (x) {
+            return (x === 1) ? "on" : "off";
+        }
+    };
     this.rate = {
         type: "range",
         target: "speech-rate",
@@ -303,7 +315,9 @@ Engine.prototype.run = function (array, tmp) {
             this.newUtt.voice = this.voice.selection[$("#" + this.voice.target).find(":selected").data("index")];
             this.newUtt.rate = this.rate.value;
             this.newUtt.text = array[0][0];
-            $("#text-of-calculation").text(array[0].join("").replace(/\s{2,}/g, ""));
+			if (this.calculationText.value === 1) {
+				$("#text-of-calculation").text(array[0].join("").replace(/\s{2,}/g, ""));
+			}
             array[0].shift();
             this.newUtt.onend = function () {
                 that.timeouts.push(setTimeout(function () {
