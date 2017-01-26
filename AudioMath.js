@@ -14,10 +14,10 @@ function Engine(name) {
         type: "range",
         target: "numbers",
         text: "Numbers:",
-        value: 5,
+        value: 3,
         min: 2,
         step: 1,
-        MAX: 10
+        MAX: 5
     };
     this.digits = {
         type: "range",
