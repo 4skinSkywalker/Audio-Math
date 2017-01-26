@@ -21,13 +21,13 @@ body:after {
 	word-wrap:break-word;
 	text-align: center;
 }
-#soroban {
+#soroban-div {
 	position: absolute;
     top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
-.site-wrap {
+#site-wrap {
 	min-width: 100vw;
 	min-height: 100vh;
 	background: #000;
@@ -37,7 +37,7 @@ body:after {
 	left: 0;
 	z-index: 1;
 }
-.nav-trigger {
+#nav-trigger {
 	position: absolute;
 	clip: rect(0, 0, 0, 0);
 }
@@ -76,7 +76,7 @@ input[type=range].slider::-webkit-slider-thumb {
 input[type=range].slider:focus::-webkit-slider-runnable-track {
 	background: #ff0;
 }
-.navigation {
+#navigation {
 	margin: 0;
 	list-style: none;
 	background: #222;

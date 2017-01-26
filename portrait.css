@@ -16,7 +16,7 @@ td img {
     font-size: 4vh;
     padding: 1vh 1.5vh;
 }
-.navigation {
+#navigation {
 	padding: 2vh;
 }
 label[for="nav-trigger"] {
@@ -25,13 +25,13 @@ label[for="nav-trigger"] {
 	width: 6vh;
 	height: 6vh;
 }
-.nav-trigger:checked + label {
+#nav-trigger:checked + label {
 	left: 37vh;
 }
-.nav-trigger:checked ~ .site-wrap {
+#nav-trigger:checked ~ #site-wrap {
 	left: 35vh;
 }
-.nav-trigger + label, .site-wrap {
+#nav-trigger + label, #site-wrap {
 	transition: left 0.2s;
 }
 .nav-item label, .nav-item p, .nav-item span.range-label  {

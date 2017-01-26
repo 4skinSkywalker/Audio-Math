@@ -17,7 +17,7 @@ td img {
 	padding: 1vh 3vh;
 	cursor: pointer;
 }
-.navigation {
+#navigation {
 	padding: 4vh;
 }
 label[for="nav-trigger"] {
@@ -26,13 +26,13 @@ label[for="nav-trigger"] {
 	width: 10vh;
 	height: 10vh;
 }
-.nav-trigger:checked + label {
+#nav-trigger:checked + label {
 	left: 67vh;
 }
-.nav-trigger:checked ~ .site-wrap {
+#nav-trigger:checked ~ #site-wrap {
 	left: 63vh;
 }
-.nav-trigger + label, .site-wrap {
+#nav-trigger + label, #site-wrap {
 	transition: left 0.2s;
 }
 .nav-item label, .nav-item p, .nav-item span.range-label  {
@@ -67,10 +67,10 @@ input[type=range].slider::-webkit-slider-thumb {
 		color: #000;
 		background: #111;
 	}
-	.nav-trigger:checked + label {
+	#nav-trigger:checked + label {
 		left: 35vh;
 	}
-	.nav-trigger:checked ~ .site-wrap {
+	#nav-trigger:checked ~ #site-wrap {
 		left: 31vh;
 	}
 	.nav-item label, .nav-item p, .nav-item span.range-label{
