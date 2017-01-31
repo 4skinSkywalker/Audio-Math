@@ -22,6 +22,9 @@ td img {
 #navigation {
 	padding: 2vh;
 }
+.nav-item input, .nav-item select {
+	margin-bottom: 24px;
+}
 label[for="nav-trigger"] {
 	top: 2vh;
 	left: 2vh;

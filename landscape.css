@@ -23,6 +23,9 @@ td img {
 #navigation {
 	padding: 4vh;
 }
+.nav-item input, .nav-item select {
+	margin-bottom: 32px;
+}
 label[for="nav-trigger"] {
 	top: 4vh;
 	left: 4vh;
@@ -69,6 +72,9 @@ input[type=range].slider::-webkit-slider-thumb {
 	.btn-standard[disabled]:hover {
 		color: #000;
 		background: #111;
+	}
+	.nav-item input, .nav-item select {
+		margin-bottom: 8px;
 	}
 	#nav-trigger:checked + label {
 		left: 35vh;
