@@ -26,7 +26,7 @@ function Engine(name) {
         value: 1,
         min: 1,
         step: 1,
-        MAX: 2
+        MAX: 3
     };
     this.animation = {
         type: "range",
