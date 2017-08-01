@@ -157,9 +157,7 @@ Engine.prototype.onSettingChange = function (obj, key) {
 	
 	if (key == "digits") {
 		this.onChangeAttacher(el, function () {
-			document.getElementById("soroban-div").innerHTML = "";
-			that.soroban = new Abacus("soroban-div", that.name + ".soroban", that.digits.value + 1, "Soroban", 0, "img/");
-			that.soroban.htmldraw();
+			that.sorobanMaker();
 		});
 	}
 	
@@ -257,10 +255,16 @@ Engine.prototype.markupInit = function () {
     this.populateSiteWrap();
     this.functionizer("#engine-button", this.name + ".start()", "Play");
 };
+Engine.prototype.sorobanMaker = function () {
+	// destroy old instance of soroban
+	document.getElementById("soroban-div").innerHTML = "";
+	// make a new soroban then draw it
+	this.soroban = new Abacus("soroban-div", this.name + ".soroban", this.digits.value + 1, "Soroban", 0, "img/");
+    this.soroban.htmldraw();
+};
 Engine.prototype.eventsInit = function () {
     var that = this;
-    this.soroban = new Abacus("soroban-div", this.name + ".soroban", this.digits.value + 1, "Soroban", 0, "img/");
-    this.soroban.htmldraw();
+    this.sorobanMaker();
     (function populateVoiceList() {
         var retry = setInterval(function () {
             if (!$("#" + that.voice.target).val()) {
