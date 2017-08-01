@@ -153,7 +153,16 @@ Engine.prototype.onSettingChange = function (obj, key) {
         this.onChangeAttacher(el, function () {
             obj[key].value = $("#" + obj[key].target).val();
         });
-    }
+	}
+	
+	if (key == "digits") {
+		this.onChangeAttacher(el, function () {
+			document.getElementById("soroban-div").innerHTML = "";
+			that.soroban = new Abacus("soroban-div", that.name + ".soroban", that.digits.value + 1, "Soroban", 0, "img/");
+			that.soroban.htmldraw();
+		});
+	}
+	
     if (obj[key].change || obj[key].char) {
         this.onChangeAttacher(el, function () {
             var ch = (obj[key].char) ? obj[key].char : "";
@@ -250,7 +259,7 @@ Engine.prototype.markupInit = function () {
 };
 Engine.prototype.eventsInit = function () {
     var that = this;
-    this.soroban = new Abacus("soroban-div", this.name + ".soroban", 3, "Soroban", 0, "img/");
+    this.soroban = new Abacus("soroban-div", this.name + ".soroban", this.digits.value + 1, "Soroban", 0, "img/");
     this.soroban.htmldraw();
     (function populateVoiceList() {
         var retry = setInterval(function () {
