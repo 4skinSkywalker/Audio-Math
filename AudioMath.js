@@ -28,6 +28,18 @@ function Engine(name) {
         step: 1,
         MAX: 3
     };
+	this.emode = {
+        type: "range",
+        target: "emode",
+        text: "Easy mode:",
+        value: 1,
+        min: 0,
+        step: 1,
+        MAX: 1,
+        "change": function (x) {
+            return (x === 1) ? "on" : "off";
+        }
+    };
     this.animation = {
         type: "range",
         target: "animation",
@@ -224,6 +236,8 @@ Engine.prototype.generateArray = function () {
         string += String(first);
         numbers.push(first);
         procedures.push(first);
+		var divisor;
+		var quotient;
         for (var j = 1; j < this.numbers.value; j++) {
             next = this.randomNumber(sub, count);
             count += next;
@@ -231,19 +245,33 @@ Engine.prototype.generateArray = function () {
             signs.push(sign);
             string += sign + Math.abs(next);
             numbers.push(Math.abs(next));
-            (function breakDown(num) {
-                if (num <= 0) {
-                    return false;
-                }
-                num = num.toFixed(0);
-                var divisor = Math.pow(10, num.length - 1);
-                var quotient = Math.floor(num / divisor);
-                procedures.push(signs[j - 1] + divisor * quotient);
-                breakDown(num % divisor);
-            })(numbers[j]);
+			if (this.emode.value == true)
+			{
+				(function breakDown(num) {
+					if (num <= 0) {
+						return false;
+					}
+					num = num.toFixed(0);
+					divisor = Math.pow(10, num.length - 1);
+					quotient = Math.floor(num / divisor);
+					procedures.push(signs[j - 1] + divisor * quotient);
+					breakDown(num % divisor);
+				})(numbers[j]);
+			}
+			else
+			{
+				procedures.push(signs[j - 1] + numbers[j]);
+			}
         }
-        procedures.push(" = ");
-        procedures.push(count);
+		if (this.emode.value == true)
+		{
+			procedures.push(" = ");
+			procedures.push(count);
+		}
+		else
+		{
+			procedures.push(" = " + count);
+		}
         series.push(procedures);
         strings.push(string);
     }
@@ -327,6 +355,10 @@ Engine.prototype.speak = function (array, count) {
     if (this.calculationText.value === 1) {
         $("#text-of-calculation").text(array[0].join("").replace(/\s{2,}/g, ""));
     }
+	if (this.emode.value == false)
+	{
+		this.delay.value += this.delay.value / 2;
+	}
     this.newUtt.onend = function () {
 		if (that.running) {
 			that.timeouts.push(setTimeout(function () {
