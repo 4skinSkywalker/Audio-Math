@@ -355,10 +355,6 @@ Engine.prototype.speak = function (array, count) {
     if (this.calculationText.value === 1) {
         $("#text-of-calculation").text(array[0].join("").replace(/\s{2,}/g, ""));
     }
-	if (this.emode.value == false)
-	{
-		this.delay.value += this.delay.value / 2;
-	}
     this.newUtt.onend = function () {
 		if (that.running) {
 			that.timeouts.push(setTimeout(function () {
