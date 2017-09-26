@@ -263,15 +263,9 @@ Engine.prototype.generateArray = function () {
 				procedures.push(signs[j - 1] + numbers[j]);
 			}
         }
-		if (this.emode.value == true)
-		{
-			procedures.push(" = ");
-			procedures.push(count);
-		}
-		else
-		{
-			procedures.push(" = " + count);
-		}
+
+		procedures.push(" = ");
+		procedures.push(count);
         series.push(procedures);
         strings.push(string);
     }
