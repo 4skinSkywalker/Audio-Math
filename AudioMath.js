@@ -6,8 +6,8 @@ function Engine(name) {
         target: "calculations",
         text: "Calculations:",
         value: 20,
-        min: 20,
-        step: 20,
+        min: 5,
+        step: 5,
         MAX: 100
     };
     this.numbers = {
@@ -84,7 +84,7 @@ function Engine(name) {
         value: 100,
         min: 0,
         step: 100,
-        MAX: 1000,
+        MAX: 3000,
         "char": "s",
         "change": function (x) {
             return String(x / 1000).replace("0.", ".");;
