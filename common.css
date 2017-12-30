@@ -3,16 +3,16 @@ body{overflow:hidden;position:fixed;margin:0;height:100vh;background:#000}
 ::-webkit-scrollbar{display:none}
 button:focus{outline:0!important}
 body:after {
-	content: url("img/off/upper-bead-off.png")
-		url("img/off/lower-bead-off1.png")
-		url("img/off/lower-bead-off2.png")
-		url("img/off/lower-bead-off3.png")
-		url("img/off/lower-bead-off4.png")
-		url("img/on/upper-bead-on.png")
-		url("img/on/lower-bead-on1.png")
-		url("img/on/lower-bead-on2.png")
-		url("img/on/lower-bead-on3.png")
-		url("img/on/lower-bead-on4.png");
+	content: url("img/0.png")
+		url("img/1.png")
+		url("img/2.png")
+		url("img/3.png")
+		url("img/4.png")
+		url("img/5.png")
+		url("img/6.png")
+		url("img/7.png")
+		url("img/8.png")
+		url("img/9.png");
 	display: none;
 }
 #status-bar * {
@@ -33,7 +33,7 @@ body:after {
 #site-wrap {
 	min-width: 100vw;
 	min-height: 100vh;
-	background: #000;
+	background: #708090;
 	position: relative;
 	top: 0;
 	bottom: 100%;
@@ -101,8 +101,8 @@ input[type=range].slider:focus::-webkit-slider-runnable-track {
 }
 .btn-standard {
 	position: absolute;
-    background: #222;
-    color: #000;
+    background: #333;
+    color: #fff;
     z-index: 10;
     border: 0;
     border-radius: 4px;

@@ -2,7 +2,7 @@
 //
 function Abacus(target, nm, nc, abtype, iv, imagep) {
     this.target = target;
-	this.v029 = 0;
+    this.v029 = 0;
     this.abacusname = nm;
     this.v018 = nc;
     this.imagepath = imagep;
@@ -17,10 +17,10 @@ function Abacus(target, nm, nc, abtype, iv, imagep) {
     }
     this.v022 = new Array();
     this.currentvalue = iv;
-	this.upperBeadOnPic = this.imagepath + "on/upper-bead-on.png"
-	this.lowerBeadOnPic = this.imagepath + "on/lower-bead-on"
-	this.upperBeadOffPic = this.imagepath + "off/upper-bead-off.png"
-	this.lowerBeadOffPic = this.imagepath + "off/lower-bead-off"
+    this.upperBeadOnPic = this.imagepath;
+    this.lowerBeadOnPic = this.imagepath;
+    this.upperBeadOffPic = this.imagepath;
+    this.lowerBeadOffPic = this.imagepath;
     this.v031 = this.imagepath + "no-bead.png";
     this.v040 = this.imagepath + "middle-rod.png";
     this.assignstring = v045;
@@ -87,24 +87,32 @@ function v043() {
 function v044() {
     if (this.v029 == 1) {
         for (v015 = 1; v015 < this.v017 + 2; v015++) {
+
             for (v016 = this.v018 - 1; v016 >= 0; --v016) {
                 v030 = "T" + v015 + "-" + v016 + "-" + this.abacusname;
+
+                var value = this.v022[v016].v020 * 5 + this.v022[v016].v019;
+
                 if ((this.v017 - this.v022[v016].v020) > (v015 - 1)) {
-                    document.images[v030].src = this.upperBeadOffPic;
+                    document.images[v030].src = this.upperBeadOffPic + 0 + ".png";
                 } else if ((this.v017 - this.v022[v016].v020) < (v015 - 1)) {
-                    document.images[v030].src = this.upperBeadOnPic;
+                    document.images[v030].src = this.upperBeadOnPic + value + ".png";;
                 } else {
                     document.images[v030].src = this.v031;
                 }
             }
         }
         for (v015 = 1; v015 < this.v027 + 2; v015++) {
+
             for (v016 = this.v018 - 1; v016 >= 0; --v016) {
                 v030 = "B" + v015 + "-" + v016 + "-" + this.abacusname;
+
+                value = this.v022[v016].v020 * 5 + this.v022[v016].v019;
+
                 if (v015 > this.v022[v016].v019 + 1) {
-                    document.images[v030].src = this.lowerBeadOffPic + (v015-1) + ".png";
+                    document.images[v030].src = this.lowerBeadOffPic + 0 + ".png"; //(v015-1) +
                 } else if (v015 < this.v022[v016].v019 + 1) {
-                    document.images[v030].src = this.lowerBeadOnPic + v015 + ".png";
+                    document.images[v030].src = this.lowerBeadOnPic + value + ".png"; //v015 +
                 } else {
                     document.images[v030].src = this.v031;
                 }
@@ -175,9 +183,9 @@ function v046(v022) {
     v036 = this.v027;
     code += '<table class="soroban-lower" cellpadding=0 cellspacing=0>';
     for (v015 = 0; v015 < v036 + 2; v015++) {
-        if (v015 == 0) 
+        if (v015 == 0)
 			code += '<tr style="line-height:6px;">';
-        else 
+        else
 			code += "<tr>";
         for (v016 = v021 - 1; v016 >= 0; --v016) {
             code += "<td>";
@@ -187,7 +195,7 @@ function v046(v022) {
                 if (v015 != this.v022[v016].v019 + 1) {
                     code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src='" + this.lowerBeadOffPic + (v015-1) + ".png' onClick=" + this.abacusname + ".v039(this.name)>";
                 } else {
-                    code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.v031 + " onClick=" + this.abacusname + ".v039(this.name)>"; 
+                    code += "<img name='B" + v015 + "-" + v016 + "-" + this.abacusname + "' src=" + this.v031 + " onClick=" + this.abacusname + ".v039(this.name)>";
                 }
             }
             code += "</td>";
