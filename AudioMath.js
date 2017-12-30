@@ -166,13 +166,13 @@ Engine.prototype.onSettingChange = function (obj, key) {
             obj[key].value = $("#" + obj[key].target).val();
         });
 	}
-	
+
 	if (key == "digits") {
 		this.onChangeAttacher(el, function () {
 			that.sorobanMaker();
 		});
 	}
-	
+
     if (obj[key].change || obj[key].char) {
         this.onChangeAttacher(el, function () {
             var ch = (obj[key].char) ? obj[key].char : "";
@@ -282,7 +282,8 @@ Engine.prototype.sorobanMaker = function () {
 	document.getElementById("soroban-div").innerHTML = "";
 	// make a new soroban then draw it
 	this.soroban = new Abacus("soroban-div", this.name + ".soroban", this.digits.value + 1, "Soroban", 0, "img/");
-    this.soroban.htmldraw();
+  this.soroban.htmldraw();
+  this.soroban.reset();
 };
 Engine.prototype.eventsInit = function () {
     var that = this;
