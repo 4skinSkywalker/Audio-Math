@@ -1,3 +1,7 @@
+#site-wrap {
+	background: url('img/hologradport.png');
+	background-size: cover;
+}
 #title {
 	font-size: 4vh;
 }

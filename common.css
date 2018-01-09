@@ -33,7 +33,7 @@ body:after {
 #site-wrap {
 	min-width: 100vw;
 	min-height: 100vh;
-	background: #708090;
+	background: #fff;
 	position: relative;
 	top: 0;
 	bottom: 100%;

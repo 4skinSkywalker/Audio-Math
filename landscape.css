@@ -1,3 +1,7 @@
+#site-wrap {
+	background: url('img/hologradland.png');
+	background-size: cover;
+}
 #title {
 	font-size: 6vh;
 }
