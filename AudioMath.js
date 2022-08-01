@@ -71,7 +71,7 @@ function Engine(name) {
         value: 1.0,
         min: 0.5,
         step: 0.1,
-        MAX: 2,
+        MAX: 3,
         "char": "%",
         "change": function (x) {
             return Math.round(x * 100);
